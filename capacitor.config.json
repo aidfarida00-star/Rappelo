@@ -1,0 +1,10 @@
+{
+  "appId": "com.rappello.app",
+  "appName": "Rappello",
+  "webDir": "www",
+  "plugins": {
+    "LocalNotifications": {
+      "iconColor": "#4F46E5"
+    }
+  }
+}
