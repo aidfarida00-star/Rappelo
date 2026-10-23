@@ -1,0 +1,958 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>Rappello</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&family=Cairo:wght@500;600;700;800&display=swap">
+<style>
+/* Layout : une colonne d'application (560px max), carte « prochain rappel », alerte stock, liste horaire dépliable, bouton flottant. */
+:root{
+  --bg:#F3F5FC; --surface:#FFFFFF; --surface-2:#EBEEF8; --ink:#1D2142; --muted:#5F6589; --line:#DFE3F1;
+  --accent:#4F46E5; --accent-ink:#FFFFFF;
+  --med:#E23D63; --med-soft:#FDE4EA;
+  --rdv:#1583CF; --rdv-soft:#DFF0FB;
+  --tache:#C87800; --tache-soft:#FFF0D2;
+  --ok:#1E9A65; --ok-soft:#DDF5EA;
+  --late:#D2452B; --warn-soft:#FFEBD9;
+  --on-color:#FFFFFF;
+  --shadow:0 6px 24px rgba(40,46,110,.10);
+  --f-display:"Fredoka","Nunito","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Nunito","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1B1E3B; --surface-2:#242850; --ink:#EEF0FF; --muted:#A6ABCF; --line:#2E3260;
+  --accent:#8C84FF; --accent-ink:#11132A;
+  --med:#FF6E8E; --med-soft:#3A1D2E; --rdv:#4FB4F6; --rdv-soft:#15304C; --tache:#FFB83D; --tache-soft:#3A2D12;
+  --ok:#3ECD8D; --ok-soft:#163A2C; --late:#FF7A5C; --warn-soft:#3A2418; --on-color:#12142A; --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1B1E3B; --surface-2:#242850; --ink:#EEF0FF; --muted:#A6ABCF; --line:#2E3260;
+  --accent:#8C84FF; --accent-ink:#11132A;
+  --med:#FF6E8E; --med-soft:#3A1D2E; --rdv:#4FB4F6; --rdv-soft:#15304C; --tache:#FFB83D; --tache-soft:#3A2D12;
+  --ok:#3ECD8D; --ok-soft:#163A2C; --late:#FF7A5C; --warn-soft:#3A2418; --on-color:#12142A; --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme:dark}
+:root[lang="ar"]{ --f-display:"Cairo","Fredoka",system-ui,sans-serif; --f-body:"Cairo","Nunito",system-ui,sans-serif; }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.45}
+.app{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 120px;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+svg{flex:none}
+
+/* Marque et langues */
+.brandbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-family:"Fredoka",var(--f-display);font-size:24px;font-weight:700;color:var(--accent);letter-spacing:.01em}
+.brand .logo{width:34px;height:34px;border-radius:11px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;transform:rotate(-8deg)}
+.langs{display:flex;gap:4px;background:var(--surface);border-radius:99px;padding:4px}
+.langs button{border:0;background:none;border-radius:99px;padding:6px 14px;font-weight:800;font-size:14px;color:var(--muted)}
+.langs button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.langs .ar{font-family:"Cairo",sans-serif}
+
+/* En-tête */
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.day{font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+:root[lang="ar"] .day{letter-spacing:0}
+.date{font-size:clamp(28px,7vw,36px);font-weight:600;line-height:1.1}
+.clock{font-family:"Fredoka",var(--f-display);font-size:34px;font-weight:600;font-variant-numeric:tabular-nums}
+
+.unlock{display:flex;align-items:center;gap:14px;width:100%;text-align:start;border:2px dashed var(--accent);background:var(--surface);border-radius:20px;padding:16px 18px}
+.unlock .ico{width:52px;height:52px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}
+.unlock b{display:block;font-family:var(--f-display);font-size:20px;font-weight:600}
+.unlock span{color:var(--muted);font-size:15px}
+
+.next{border-radius:26px;padding:20px 22px;color:var(--on-color);display:flex;gap:16px;align-items:center;box-shadow:var(--shadow);background:var(--accent)}
+.next.med{background:var(--med)} .next.rdv{background:var(--rdv)} .next.tache{background:var(--tache)} .next.allok{background:var(--ok)}
+.next .big{width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,.22);display:grid;place-items:center}
+.next small{font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:13px;opacity:.9}
+.next h2{font-size:24px;font-weight:600;line-height:1.15;overflow-wrap:anywhere}
+.next p{margin:2px 0 0;font-weight:700;opacity:.95}
+.next>div:last-child{min-width:0}
+
+/* Stock */
+.stock{background:var(--warn-soft);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.stock h3{font-size:18px;font-weight:600;color:var(--late);display:flex;align-items:center;gap:8px}
+.srow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.srow b{font-weight:800}
+.srow span{color:var(--muted);font-size:15px}
+.mini{border:0;border-radius:12px;padding:9px 14px;font-weight:800;font-size:15px;background:var(--surface);color:var(--ink)}
+
+.progress{display:flex;align-items:center;gap:12px}
+.bar{flex:1;height:12px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:99px;transition:width .5s}
+.progress b{font-variant-numeric:tabular-nums;font-size:15px;color:var(--muted);white-space:nowrap}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:99px;padding:8px 16px;font-weight:800;font-size:15px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+/* Liste */
+.list{display:flex;flex-direction:column;gap:10px;list-style:none;margin:0;padding:0}
+.item{background:var(--surface);border-radius:20px;padding:12px 12px;border:2px solid transparent;display:flex;flex-direction:column;gap:10px}
+.item.isnext{border-color:var(--accent)}
+.main{display:grid;grid-template-columns:62px 48px 1fr 52px;align-items:center;gap:12px}
+.t{font-family:"Fredoka",var(--f-display);font-size:21px;font-weight:600;font-variant-numeric:tabular-nums;text-align:center}
+.bubble{width:48px;height:48px;border-radius:16px;display:grid;place-items:center}
+.med .bubble{background:var(--med-soft);color:var(--med)}
+.rdv .bubble{background:var(--rdv-soft);color:var(--rdv)}
+.tache .bubble{background:var(--tache-soft);color:var(--tache)}
+.body{min-width:0;text-align:start;background:none;border:0;padding:0}
+.ttl{font-weight:800;font-size:18px;line-height:1.25;overflow-wrap:anywhere}
+.meta{font-size:14px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:3px}
+.tag{font-size:12px;font-weight:800;letter-spacing:.03em;padding:2px 8px;border-radius:99px;display:inline-flex;align-items:center;gap:4px}
+.tag.late{background:var(--late);color:var(--on-color)}
+.tag.nx{background:var(--accent);color:var(--accent-ink)}
+.tag.low{background:var(--warn-soft);color:var(--late)}
+.tag.stk{background:var(--med-soft);color:var(--med)}
+.tag.vox{background:var(--ok-soft);color:var(--ok)}
+.check{width:48px;height:48px;border-radius:50%;border:3px solid var(--line);background:var(--surface);display:grid;place-items:center;color:transparent;transition:.2s}
+.check:hover{border-color:var(--ok)}
+.item.done .check{background:var(--ok);border-color:var(--ok);color:var(--on-color)}
+.item.done .ttl{text-decoration:line-through;color:var(--muted)}
+.item.done .t,.item.done .bubble{opacity:.45}
+
+.prepbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--rdv-soft);border-radius:14px;padding:8px 8px 8px 14px;font-weight:800;font-size:15px;color:var(--rdv)}
+:root[dir="rtl"] .prepbar{padding:8px 14px 8px 8px}
+.prepbar .mini{background:var(--surface);color:var(--rdv)}
+.prep{display:flex;flex-direction:column;gap:10px;padding:2px 4px}
+.prep h4{margin:0;font-size:14px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.bring{display:flex;flex-wrap:wrap;gap:8px}
+.bring label{display:inline-flex;flex-direction:row;align-items:center;gap:8px;background:var(--surface-2);border-radius:12px;padding:8px 12px;font-weight:700;font-size:15px;cursor:pointer}
+.bring input{width:20px;height:20px;padding:0;accent-color:var(--ok)}
+.bring label.ok{background:var(--ok-soft);color:var(--ok);text-decoration:line-through}
+.qs{white-space:pre-wrap;background:var(--surface-2);border-radius:12px;padding:10px 12px;font-size:15px}
+
+.empty{text-align:center;color:var(--muted);padding:28px 10px;background:var(--surface);border-radius:20px}
+.examples{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--muted);background:var(--surface-2);border-radius:14px;padding:10px 14px}
+.link{background:none;border:0;color:var(--accent);font-weight:800;padding:4px 0;text-decoration:underline}
+
+.settings{display:flex;flex-direction:column;gap:12px;background:var(--surface);border-radius:20px;padding:16px 18px}
+.settings h3{font-size:18px;font-weight:600}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.hint{font-size:14px;color:var(--muted);margin:0}
+.switch{width:58px;height:34px;border-radius:99px;border:0;background:var(--line);position:relative;transition:.2s;flex:none}
+.switch::after{content:"";position:absolute;top:4px;inset-inline-start:4px;width:26px;height:26px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch[aria-checked="true"]{background:var(--ok)}
+.switch[aria-checked="true"]::after{inset-inline-start:28px}
+.btn{border:0;border-radius:16px;padding:14px 18px;font-weight:800;font-size:17px;background:var(--surface-2);color:var(--ink)}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.danger{background:var(--med-soft);color:var(--med)}
+
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));border:0;border-radius:99px;background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-size:21px;font-weight:600;padding:16px 28px;display:flex;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(79,70,229,.4);z-index:5;white-space:nowrap}
+
+/* Formulaire */
+.scrim{position:fixed;inset:0;background:rgba(10,12,40,.5);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:560px;max-height:94%;overflow:auto;border-radius:28px 28px 0 0;padding-block:22px calc(22px + env(safe-area-inset-bottom,0px));padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.sheet h2{font-size:26px;font-weight:600}
+.types{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.type{border:3px solid transparent;border-radius:18px;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:800;font-size:15px}
+.type.med{background:var(--med-soft);color:var(--med)} .type.rdv{background:var(--rdv-soft);color:var(--rdv)} .type.tache{background:var(--tache-soft);color:var(--tache)}
+.type[aria-pressed="true"]{border-color:currentColor}
+.fl{font-weight:800;font-size:15px;display:flex;flex-direction:column;gap:6px}
+input,select,textarea{font:inherit;font-size:18px;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px 14px;width:100%}
+textarea{min-height:80px;resize:vertical}
+input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface-2);padding:5px;border-radius:14px}
+.seg button{border:0;border-radius:10px;padding:10px;background:none;font-weight:800;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.box{background:var(--surface);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:12px;border:2px solid var(--line)}
+.box h3{font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px}
+.box.med h3{color:var(--med)} .box.rdv h3{color:var(--rdv)} .box.voice h3{color:var(--ok)}
+.sheet:not([data-type="med"]) .only-med{display:none}
+.sheet:not([data-type="rdv"]) .only-rdv{display:none}
+.sug{display:flex;flex-wrap:wrap;gap:8px}
+.sug button{border:2px dashed var(--line);background:none;border-radius:12px;padding:7px 12px;font-weight:700;font-size:15px;color:var(--muted)}
+.sug button[aria-pressed="true"]{border-style:solid;border-color:var(--rdv);background:var(--rdv-soft);color:var(--rdv)}
+.addrow{display:flex;gap:8px}
+.addrow .mini{background:var(--surface-2)}
+.vstate{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:700}
+.filebtn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:8px;border-radius:14px;background:var(--ok-soft);color:var(--ok);font-weight:800;padding:12px 16px;cursor:pointer}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+.err{color:var(--late);font-weight:700;font-size:15px;margin:0}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.actions .btn{flex:1}
+
+/* Alerte plein écran */
+.alert{position:fixed;inset:0;z-index:30;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;color:var(--on-color);padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-bottom,0px));padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));background:var(--accent)}
+.alert.med{background:var(--med)} .alert.rdv{background:var(--rdv)} .alert.tache{background:var(--tache)}
+.ring{width:116px;height:116px;border-radius:50%;background:rgba(255,255,255,.25);display:grid;place-items:center;animation:pulse 1.4s ease-in-out infinite;flex:none}
+@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,255,255,.5)}50%{transform:scale(1.06);box-shadow:0 0 0 22px rgba(255,255,255,0)}}
+.alert small{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:15px}
+.alert h2{font-size:clamp(30px,9vw,44px);font-weight:600;line-height:1.1;max-width:18ch;overflow-wrap:anywhere}
+.alert .when{font-family:"Fredoka",var(--f-display);font-size:28px;font-weight:600}
+.alert .note{font-size:18px;font-weight:700;max-width:32ch}
+.alert .from{background:rgba(255,255,255,.22);border-radius:99px;padding:6px 16px;font-weight:800;display:inline-flex;gap:8px;align-items:center}
+.alert .abring{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:420px}
+.alert .abring label{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.2);border-radius:12px;padding:8px 12px;font-weight:800;cursor:pointer}
+.alert .abring input{width:20px;height:20px;accent-color:#fff}
+.alert .actions{width:100%;max-width:420px;flex-direction:column}
+.alert .btn{font-size:20px;padding:18px;background:rgba(255,255,255,.25);color:inherit}
+.alert .btn.big{background:#fff;color:#1D2142;font-size:22px}
+@media (prefers-reduced-motion:reduce){.ring{animation:none}.bar i{transition:none}}
+@media (max-width:420px){.main{grid-template-columns:52px 42px 1fr 48px;gap:9px}.bubble{width:42px;height:42px}.t{font-size:18px}.three{grid-template-columns:1fr 1fr}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-med" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-40 12 12)"/><path d="M9.3 8.2l6.5 7.6"/></symbol>
+  <symbol id="i-rdv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor"/></symbol>
+  <symbol id="i-tache" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5l1.8 1.8L9 5M4 13.5l1.8 1.8L9 12M12.5 7h7.5M12.5 14h7.5M12.5 20h7.5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-walk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4.5" r="1.8"/><path d="M10 21l2-6 3 3v3M8 11l3-3 3 1 2 3 2 1M12 8l-1 5"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21h4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+</svg>
+
+<main class="app">
+  <div class="brandbar">
+  <div class="brand"><span class="logo" aria-hidden="true"><svg width="20" height="20"><use href="#i-bell"/></svg></span><span id="brandname">Rappello</span></div>
+  <div class="langs" role="group" aria-label="Langue / Language / اللغة">
+    <button data-lang="fr" aria-pressed="true">FR</button>
+    <button data-lang="en" aria-pressed="false">EN</button>
+    <button data-lang="ar" class="ar" aria-pressed="false">عربي</button>
+  </div>
+  </div>
+
+  <header class="top">
+    <div><div class="day" id="day"></div><h1 class="date" id="date"></h1></div>
+    <div class="clock" id="clock">--:--</div>
+  </header>
+
+  <button class="unlock" id="unlock" type="button">
+    <div class="ico"><svg width="28" height="28"><use href="#i-sound"/></svg></div>
+    <div><b data-t="unlockTitle"></b><span data-t="unlockText"></span></div>
+  </button>
+
+  <section class="next" id="next" aria-live="polite"></section>
+  <section class="stock" id="stock" hidden></section>
+
+  <div class="progress"><div class="bar"><i id="barfill" style="width:0"></i></div><b id="prog"></b></div>
+
+  <div class="chips" role="group">
+    <button class="chip" data-f="all" aria-pressed="true" data-t="all"></button>
+    <button class="chip" data-f="med" aria-pressed="false" data-t="fMed"></button>
+    <button class="chip" data-f="rdv" aria-pressed="false" data-t="fRdv"></button>
+    <button class="chip" data-f="tache" aria-pressed="false" data-t="fTache"></button>
+  </div>
+
+  <div class="examples" id="examples" hidden>
+    <span data-t="examplesNote"></span>
+    <button class="link" id="clearEx" type="button" data-t="clearEx"></button>
+  </div>
+
+  <ul class="list" id="list"></ul>
+
+  <section class="settings">
+    <h3 data-t="settings"></h3>
+    <div class="row"><span data-t="sound"></span><button class="switch" id="sw-sound" role="switch" aria-checked="true"></button></div>
+    <div class="row"><span data-t="voice"></span><button class="switch" id="sw-voice" role="switch" aria-checked="true"></button></div>
+    <p class="hint" data-t="voiceHint"></p>
+    <button class="btn" id="test" type="button" data-t="test"></button>
+  </section>
+</main>
+
+<button class="fab" id="add" type="button"><svg width="24" height="24"><use href="#i-plus"/></svg><span data-t="add"></span></button>
+
+<div class="scrim" id="scrim" hidden>
+  <form class="sheet" id="form" autocomplete="off" data-type="med">
+    <h2 id="formTitle"></h2>
+    <div class="types" role="group">
+      <button type="button" class="type med" data-type="med" aria-pressed="true"><svg width="30" height="30"><use href="#i-med"/></svg><span data-t="med"></span></button>
+      <button type="button" class="type rdv" data-type="rdv" aria-pressed="false"><svg width="30" height="30"><use href="#i-rdv"/></svg><span data-t="rdv"></span></button>
+      <button type="button" class="type tache" data-type="tache" aria-pressed="false"><svg width="30" height="30"><use href="#i-tache"/></svg><span data-t="tache"></span></button>
+    </div>
+    <label class="fl" for="f-title"><span data-t="what"></span><input id="f-title" required maxlength="80"></label>
+    <div class="two">
+      <label class="fl" for="f-time"><span data-t="when"></span><input id="f-time" type="time" required value="09:00" dir="ltr"></label>
+      <label class="fl" for="f-adv"><span data-t="warn"></span>
+        <select id="f-adv"><option value="0" data-t="atTime"></option><option value="10" data-t="m10"></option><option value="30" data-t="m30"></option><option value="60" data-t="h1"></option></select>
+      </label>
+    </div>
+    <div><div class="fl" style="margin-bottom:6px" data-t="repeat"></div>
+      <div class="seg" id="seg"><button type="button" data-r="once" aria-pressed="true" data-t="once"></button><button type="button" data-r="daily" aria-pressed="false" data-t="everyDay"></button></div>
+    </div>
+
+    <div class="box med only-med">
+      <h3><svg width="22" height="22"><use href="#i-box"/></svg><span data-t="stockTitle"></span></h3>
+      <div class="three">
+        <label class="fl" for="f-dose"><span data-t="dose"></span><input id="f-dose" type="number" min="0" max="20" step="0.5" value="1" inputmode="decimal"></label>
+        <label class="fl" for="f-qty"><span data-t="stockQty"></span><input id="f-qty" type="number" min="0" max="999" inputmode="numeric"></label>
+        <label class="fl" for="f-boxsz"><span data-t="boxSize"></span><input id="f-boxsz" type="number" min="1" max="999" value="30" inputmode="numeric"></label>
+      </div>
+    </div>
+
+    <div class="box rdv only-rdv">
+      <h3><svg width="22" height="22"><use href="#i-rdv"/></svg><span data-t="prepTitle"></span></h3>
+      <div class="two">
+        <label class="fl" for="f-place"><span data-t="place"></span><input id="f-place" maxlength="80"></label>
+        <label class="fl" for="f-travel"><span data-t="travel"></span><input id="f-travel" type="number" min="0" max="300" inputmode="numeric" placeholder="20"></label>
+      </div>
+      <div class="fl"><span data-t="bring"></span></div>
+      <div class="sug" id="sug"></div>
+      <div class="addrow"><input id="f-bring" maxlength="40"><button type="button" class="mini" id="bringAdd" data-t="bringAdd"></button></div>
+      <label class="fl" for="f-qs"><span data-t="questions"></span><textarea id="f-qs" maxlength="500"></textarea></label>
+    </div>
+
+    <div class="box voice">
+      <h3><svg width="22" height="22"><use href="#i-heart"/></svg><span data-t="voiceTitle"></span></h3>
+      <p class="hint" data-t="voiceHelp"></p>
+      <label class="fl" for="f-from"><span data-t="voiceFrom"></span><input id="f-from" maxlength="40"></label>
+      <div class="vstate" id="vstate"></div>
+      <p class="err" id="verr" hidden></p>
+    </div>
+
+    <label class="fl" for="f-note"><span data-t="note"></span><input id="f-note" maxlength="100"></label>
+    <div class="actions">
+      <button type="button" class="btn" id="cancel" data-t="cancel"></button>
+      <button type="submit" class="btn primary" data-t="save"></button>
+    </div>
+    <button type="button" class="btn danger" id="del" hidden></button>
+  </form>
+</div>
+
+<div class="alert" id="alert" hidden role="alertdialog" aria-labelledby="a-title">
+  <div class="ring"><svg width="58" height="58" id="a-ico"><use href="#i-med"/></svg></div>
+  <small id="a-kind"></small>
+  <h2 id="a-title"></h2>
+  <div class="when" id="a-when" dir="ltr"></div>
+  <div class="from" id="a-from" hidden><svg width="20" height="20"><use href="#i-heart"/></svg><span></span></div>
+  <div class="note" id="a-note"></div>
+  <div class="abring" id="a-bring"></div>
+  <div class="actions">
+    <button class="btn big" id="a-done" type="button" data-t="done"></button>
+    <button class="btn" id="a-snooze" type="button" data-t="snooze"></button>
+    <button class="btn" id="a-close" type="button" data-t="close"></button>
+  </div>
+</div>
+
+<script>
+/* ================= Textes FR / EN / AR ================= */
+const T = {
+fr:{appName:"Rappello",unlockTitle:"Activer les sons et la voix",unlockText:"Touchez ici une fois pour que les rappels puissent sonner et parler.",
+next:"Prochain rappel",inMin:"dans {n} min",inH:"dans {h} h {m}",now:"maintenant",today:"Aujourd'hui",allDone:"Tout est fait, bravo !",nothingLeft:"Plus rien de prévu",lateLeft:"{n} rappel(s) en retard à cocher plus bas",enjoy:"Profitez de votre journée",
+progress:"{d} sur {n} faits",all:"Tout",fMed:"Médicaments",fRdv:"Rendez-vous",fTache:"Tâches",med:"Médicament",rdv:"Rendez-vous",tache:"Tâche",
+examplesNote:"Ce sont des exemples. Touchez un rappel pour le modifier.",clearEx:"Effacer les exemples",late:"En retard",nextTag:"Prochain",daily:"Tous les jours",before:"prévenir {x} avant",snoozed:"reporté de 10 min",
+settings:"Réglages des alertes",sound:"Son de rappel",voice:"Voix qui annonce le rappel",test:"Tester une alerte maintenant",voiceHint:"La voix parle dans la langue choisie en haut. Si elle reste muette en arabe ou en anglais, ajoutez cette langue dans les réglages « synthèse vocale » du téléphone.",
+add:"Ajouter un rappel",newR:"Nouveau rappel",editR:"Modifier le rappel",what:"Quoi ?",whatPh:"Ex. : Doliprane 1000 mg",when:"À quelle heure ?",warn:"Me prévenir",atTime:"À l'heure",m10:"10 min avant",m30:"30 min avant",h1:"1 h avant",x10:"10 min",x30:"30 min",x60:"1 h",
+repeat:"Répéter",once:"Aujourd'hui seulement",everyDay:"Tous les jours",note:"Précision (facultatif)",notePh:"Ex. : avec un grand verre d'eau",cancel:"Annuler",save:"Enregistrer",del:"Supprimer ce rappel",delConfirm:"Touchez encore pour confirmer",
+stockTitle:"Ma boîte de médicaments",dose:"Comprimés par prise",stockQty:"Comprimés restants",boxSize:"Comprimés par boîte",left:"reste {n}",days:"≈ {d} j",buy:"À racheter",stockBanner:"Pensez à passer à la pharmacie",stockRow:"{n} comprimés · ≈ {d} jours",bought:"J'ai racheté (+{n})",
+prepTitle:"Préparer le rendez-vous",place:"Lieu",travel:"Trajet (minutes)",leaveAt:"Partir à {t}",bring:"À emporter",bringAdd:"Ajouter",bringPh:"Autre chose…",questions:"Questions à poser",questionsPh:"Ex. : Puis-je arrêter ce traitement ?",ready:"À emporter : {a}/{b}",prep:"Préparer",hide:"Masquer",leaveNow:"C'est l'heure de partir",
+vitale:"Carte Vitale",ordo:"Ordonnance",mutuelle:"Carte mutuelle",analyses:"Analyses / radios",ident:"Pièce d'identité",glasses:"Lunettes",
+voiceTitle:"La voix d'un proche",voiceHelp:"Un proche enregistre un message avec son téléphone (dictaphone, WhatsApp…), puis vous choisissez le fichier audio ici. C'est sa voix qui annoncera ce rappel.",voicePick:"Choisir un message vocal",voiceChange:"Changer",voiceFrom:"De la part de",voiceFromPh:"Ex. : Sarah, votre fille",voicePlay:"Écouter",voiceRemove:"Retirer",voiceTag:"Voix de {n}",voiceSome:"un proche",voiceReady:"Message vocal prêt",voiceTooBig:"Ce fichier est trop lourd (10 Mo maximum).",voiceBad:"Ce fichier n'est pas un son. Choisissez un message vocal.",
+done:"C'est fait",snooze:"Me rappeler dans 10 min",close:"Fermer",rdvIn:"Rendez-vous dans {x}",pillsLeft:"Il reste {n} comprimés",msgFrom:"Message de {n}",
+sayMed:"C'est l'heure de votre médicament : {t}.",sayRdvSoon:"Rappel : {t}, à {h}.",sayRdv:"C'est l'heure de votre rendez-vous : {t}.",sayTask:"N'oubliez pas : {t}.",sayLeave:"C'est l'heure de partir pour {t}.",sayBring:"Pensez à emporter : {l}.",sayLow:"Attention, il ne reste que {n} comprimés de {t}.",sayUnlock:"Les rappels sonores sont activés.",
+empty:"Aucun rappel ici pour aujourd'hui. Touchez « Ajouter un rappel » en bas de l'écran.",sample:"Exemple de médicament"},
+en:{appName:"Rappello",unlockTitle:"Turn on sound and voice",unlockText:"Tap here once so reminders can ring and speak.",
+next:"Next reminder",inMin:"in {n} min",inH:"in {h} h {m}",now:"now",today:"Today",allDone:"All done, well done!",nothingLeft:"Nothing else planned",lateLeft:"{n} late reminder(s) to tick below",enjoy:"Enjoy your day",
+progress:"{d} of {n} done",all:"All",fMed:"Medicines",fRdv:"Appointments",fTache:"Tasks",med:"Medicine",rdv:"Appointment",tache:"Task",
+examplesNote:"These are examples. Tap a reminder to edit it.",clearEx:"Clear examples",late:"Late",nextTag:"Next",daily:"Every day",before:"alert {x} before",snoozed:"snoozed 10 min",
+settings:"Alert settings",sound:"Reminder sound",voice:"Voice reads the reminder",test:"Test an alert now",voiceHint:"The voice speaks the language chosen at the top. If it stays silent in Arabic or English, add that language in the phone's text-to-speech settings.",
+add:"Add a reminder",newR:"New reminder",editR:"Edit reminder",what:"What?",whatPh:"E.g. Paracetamol 1000 mg",when:"What time?",warn:"Alert me",atTime:"On time",m10:"10 min before",m30:"30 min before",h1:"1 h before",x10:"10 min",x30:"30 min",x60:"1 h",
+repeat:"Repeat",once:"Today only",everyDay:"Every day",note:"Detail (optional)",notePh:"E.g. with a big glass of water",cancel:"Cancel",save:"Save",del:"Delete this reminder",delConfirm:"Tap again to confirm",
+stockTitle:"My medicine box",dose:"Pills per dose",stockQty:"Pills left",boxSize:"Pills per box",left:"{n} left",days:"≈ {d} d",buy:"Buy more",stockBanner:"Time to visit the pharmacy",stockRow:"{n} pills · ≈ {d} days",bought:"I bought a box (+{n})",
+prepTitle:"Prepare the appointment",place:"Place",travel:"Travel (minutes)",leaveAt:"Leave at {t}",bring:"To bring",bringAdd:"Add",bringPh:"Something else…",questions:"Questions to ask",questionsPh:"E.g. Can I stop this treatment?",ready:"To bring: {a}/{b}",prep:"Prepare",hide:"Hide",leaveNow:"Time to leave",
+vitale:"Health card",ordo:"Prescription",mutuelle:"Insurance card",analyses:"Test results / X-rays",ident:"ID card",glasses:"Glasses",
+voiceTitle:"A loved one's voice",voiceHelp:"A loved one records a message on their phone (voice recorder, WhatsApp…), then you pick the audio file here. Their voice will announce this reminder.",voicePick:"Choose a voice message",voiceChange:"Change",voiceFrom:"From",voiceFromPh:"E.g. Sarah, your daughter",voicePlay:"Listen",voiceRemove:"Remove",voiceTag:"{n}'s voice",voiceSome:"a loved one",voiceReady:"Voice message ready",voiceTooBig:"This file is too large (10 MB maximum).",voiceBad:"This file is not audio. Choose a voice message.",
+done:"Done",snooze:"Remind me in 10 min",close:"Close",rdvIn:"Appointment in {x}",pillsLeft:"{n} pills left",msgFrom:"Message from {n}",
+sayMed:"Time for your medicine: {t}.",sayRdvSoon:"Reminder: {t}, at {h}.",sayRdv:"Time for your appointment: {t}.",sayTask:"Don't forget: {t}.",sayLeave:"Time to leave for {t}.",sayBring:"Remember to bring: {l}.",sayLow:"Careful, only {n} pills of {t} left.",sayUnlock:"Sound reminders are on.",
+empty:"No reminders here today. Tap “Add a reminder” at the bottom of the screen.",sample:"Sample medicine"},
+ar:{appName:"رابيلو",unlockTitle:"تفعيل الصوت والكلام",unlockText:"اضغط هنا مرة واحدة ليتمكن التطبيق من الرنين والكلام.",
+next:"التذكير القادم",inMin:"بعد {n} دقيقة",inH:"بعد {h} س {m} د",now:"الآن",today:"اليوم",allDone:"أنجزت كل شيء، أحسنت!",nothingLeft:"لا شيء آخر مخطط له",lateLeft:"{n} تذكير متأخر في الأسفل",enjoy:"يوما سعيدا",
+progress:"{d} من {n} تم",all:"الكل",fMed:"الأدوية",fRdv:"المواعيد",fTache:"المهام",med:"دواء",rdv:"موعد",tache:"مهمة",
+examplesNote:"هذه أمثلة. اضغط على أي تذكير لتعديله.",clearEx:"حذف الأمثلة",late:"متأخر",nextTag:"التالي",daily:"كل يوم",before:"تنبيه قبل {x}",snoozed:"مؤجل 10 دقائق",
+settings:"إعدادات التنبيه",sound:"صوت التنبيه",voice:"صوت يقرأ التذكير",test:"تجربة تنبيه الآن",voiceHint:"يتكلم الصوت باللغة المختارة في الأعلى. إذا بقي صامتا بالعربية، أضف اللغة العربية في إعدادات تحويل النص إلى كلام في الهاتف.",
+add:"إضافة تذكير",newR:"تذكير جديد",editR:"تعديل التذكير",what:"ماذا؟",whatPh:"مثال: دوليبران 1000 ملغ",when:"في أي ساعة؟",warn:"نبّهني",atTime:"في الوقت",m10:"قبل 10 دقائق",m30:"قبل 30 دقيقة",h1:"قبل ساعة",x10:"10 دقائق",x30:"30 دقيقة",x60:"ساعة",
+repeat:"التكرار",once:"اليوم فقط",everyDay:"كل يوم",note:"ملاحظة (اختياري)",notePh:"مثال: مع كأس ماء كبير",cancel:"إلغاء",save:"حفظ",del:"حذف هذا التذكير",delConfirm:"اضغط مرة أخرى للتأكيد",
+stockTitle:"علبة الدواء",dose:"حبات في كل مرة",stockQty:"الحبات المتبقية",boxSize:"حبات في العلبة",left:"باقي {n}",days:"≈ {d} يوم",buy:"يجب الشراء",stockBanner:"حان وقت الذهاب إلى الصيدلية",stockRow:"{n} حبات · ≈ {d} أيام",bought:"اشتريت علبة (+{n})",
+prepTitle:"تحضير الموعد",place:"المكان",travel:"مدة الطريق (دقائق)",leaveAt:"الخروج في {t}",bring:"ما يجب أخذه",bringAdd:"إضافة",bringPh:"شيء آخر…",questions:"أسئلة للطبيب",questionsPh:"مثال: هل يمكنني إيقاف هذا الدواء؟",ready:"ما يجب أخذه: {a}/{b}",prep:"تحضير",hide:"إخفاء",leaveNow:"حان وقت الخروج",
+vitale:"بطاقة الضمان الصحي",ordo:"الوصفة الطبية",mutuelle:"بطاقة التأمين",analyses:"التحاليل / الأشعة",ident:"بطاقة الهوية",glasses:"النظارات",
+voiceTitle:"صوت شخص عزيز",voiceHelp:"يسجل أحد أفراد العائلة رسالة بهاتفه (مسجل الصوت، واتساب…)، ثم تختار الملف الصوتي هنا. سيعلن صوته هذا التذكير.",voicePick:"اختيار رسالة صوتية",voiceChange:"تغيير",voiceFrom:"من طرف",voiceFromPh:"مثال: سارة، ابنتك",voicePlay:"استماع",voiceRemove:"إزالة",voiceTag:"صوت {n}",voiceSome:"شخص عزيز",voiceReady:"الرسالة الصوتية جاهزة",voiceTooBig:"الملف كبير جدا (10 ميغا كحد أقصى).",voiceBad:"هذا الملف ليس صوتا. اختر رسالة صوتية.",
+done:"تم",snooze:"ذكّرني بعد 10 دقائق",close:"إغلاق",rdvIn:"موعد بعد {x}",pillsLeft:"باقي {n} حبات",msgFrom:"رسالة من {n}",
+sayMed:"حان وقت دوائك: {t}.",sayRdvSoon:"تذكير: {t}، على الساعة {h}.",sayRdv:"حان وقت موعدك: {t}.",sayTask:"لا تنس: {t}.",sayLeave:"حان وقت الخروج إلى {t}.",sayBring:"لا تنس أن تأخذ: {l}.",sayLow:"انتبه، بقي {n} حبات فقط من {t}.",sayUnlock:"تم تفعيل التذكيرات الصوتية.",
+empty:"لا توجد تذكيرات هنا اليوم. اضغط على «إضافة تذكير» في أسفل الشاشة.",sample:"دواء للتجربة"}
+};
+const EX = {
+fr:{doli:["Doliprane 1000 mg","Après le petit-déjeuner"],kine:["Séance chez le kiné",""],vitd:["Vitamine D",""],pharma:["Appeler la pharmacie","Renouveler l'ordonnance"],courses:["Faire les courses","Pain, lait, fruits"],tension:["Médicament pour la tension",""],demain:["Préparer les affaires de demain",""],kinePlace:"Cabinet, 12 rue de la Gare",kineQs:"Combien de séances encore ?",from:"Sarah"},
+en:{doli:["Paracetamol 1000 mg","After breakfast"],kine:["Physiotherapy session",""],vitd:["Vitamin D",""],pharma:["Call the pharmacy","Renew the prescription"],courses:["Grocery shopping","Bread, milk, fruit"],tension:["Blood pressure medicine",""],demain:["Get things ready for tomorrow",""],kinePlace:"Clinic, 12 Station Road",kineQs:"How many more sessions?",from:"Sarah"},
+ar:{doli:["دوليبران 1000 ملغ","بعد الفطور"],kine:["جلسة العلاج الطبيعي",""],vitd:["فيتامين د",""],pharma:["الاتصال بالصيدلية","تجديد الوصفة"],courses:["التسوق","خبز، حليب، فواكه"],tension:["دواء الضغط",""],demain:["تحضير أغراض الغد",""],kinePlace:"العيادة، 12 شارع المحطة",kineQs:"كم جلسة بقيت؟",from:"سارة"}
+};
+const SUG = ["vitale","ordo","mutuelle","analyses","ident","glasses"];
+const LOC = {fr:"fr-FR", en:"en-GB", ar:"ar-u-nu-latn"};
+const SPEECH = {fr:"fr", en:"en", ar:"ar"};
+
+const KEY = 'ma-journee-v2';
+const $ = s => document.querySelector(s);
+const pad = n => String(n).padStart(2,'0');
+const todayKey = () => { const d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
+const toMin = t => { const [h,m]=t.split(':').map(Number); return h*60+m; };
+const fromMin = m => { m=((m%1440)+1440)%1440; return pad(Math.floor(m/60))+':'+pad(m%60); };
+const nowMin = () => { const d=new Date(); return d.getHours()*60+d.getMinutes()+d.getSeconds()/60; };
+const uid = () => Math.random().toString(36).slice(2,9);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s).toLowerCase().trim().replace(/\s+/g,' ');
+
+let state, filter='all', editing=null, formType='med', formRepeat='once', formBring=[], formVoice=null, expanded=new Set();
+const L = () => state.lang || 'fr';
+function t(k, v){ let s = (T[L()]||T.fr)[k] ?? T.fr[k] ?? k; if (v) for (const x in v) s = s.split('{'+x+'}').join(v[x]); return s; }
+
+/* ================= Données ================= */
+function seed(){
+  const d = todayKey();
+  state = { lang:'fr', settings:{sound:true, voice:true}, fired:{},
+    stocks:{ doli:{qty:9, box:16}, vitd:{qty:28, box:30}, tension:{qty:4, box:28} },
+    items:[
+      {id:uid(), ex:'doli', type:'med', time:'08:00', repeat:'daily', adv:0, dose:1, stockKey:'doli', date:d, voiceFrom:'', hasVoice:false},
+      {id:uid(), ex:'kine', type:'rdv', time:'10:30', repeat:'once', adv:30, travel:20, date:d,
+        bring:[{k:'vitale',ok:true},{k:'ordo',ok:false},{k:'analyses',ok:false}]},
+      {id:uid(), ex:'vitd', type:'med', time:'12:30', repeat:'daily', adv:0, dose:1, stockKey:'vitd', date:d},
+      {id:uid(), ex:'pharma', type:'tache', time:'14:00', repeat:'once', adv:0, date:d},
+      {id:uid(), ex:'courses', type:'tache', time:'17:00', repeat:'once', adv:0, date:d},
+      {id:uid(), ex:'tension', type:'med', time:'20:00', repeat:'daily', adv:0, dose:1, stockKey:'tension', date:d},
+      {id:uid(), ex:'demain', type:'tache', time:'22:30', repeat:'daily', adv:0, date:d}
+    ]};
+}
+function load(){
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.items)) state = s; else seed(); } catch(e){ seed(); }
+  state.fired = state.fired || {}; state.stocks = state.stocks || {}; state.settings = state.settings || {sound:true,voice:true};
+}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+
+const title = it => it.ex ? EX[L()][it.ex][0] : it.title;
+const note = it => it.ex ? EX[L()][it.ex][1] : (it.note||'');
+const place = it => it.ex==='kine' ? EX[L()].kinePlace : (it.place||'');
+const questions = it => it.ex==='kine' ? EX[L()].kineQs : (it.questions||'');
+const bringLabel = b => b.k ? t(b.k) : b.label;
+
+const isToday = it => it.repeat==='daily' || it.date===todayKey();
+const isDone = it => it.doneOn===todayKey();
+const alertMin = it => toMin(it.time) - (Number(it.adv)||0);
+const leaveMin = it => it.type==='rdv' && it.travel>0 ? toMin(it.time) - Number(it.travel) : null;
+const fkey = (it,kind) => [it.id,todayKey(),it.time,it.adv||0,it.travel||0,kind].join('@');
+function fmtTime(s){ return L()==='fr' ? s.replace(':',' h ') : s; }
+
+/* ---- Stock ---- */
+function dailyUse(key){
+  let u = 0; state.items.forEach(i => { if (i.type==='med' && i.stockKey===key && i.repeat==='daily') u += Number(i.dose)||0; });
+  if (!u){ const i = state.items.find(i=>i.type==='med'&&i.stockKey===key); u = i ? Number(i.dose)||0 : 0; }
+  return u;
+}
+function stockInfo(key){
+  const s = state.stocks[key]; if (!s || s.qty==null || s.qty==='') return null;
+  const u = dailyUse(key); const days = u ? Math.floor(s.qty / u) : Infinity;
+  return {qty:s.qty, box:s.box||30, days, low: days <= 5};
+}
+function takeDose(it, on){
+  if (it.type!=='med' || !state.stocks[it.stockKey] || state.stocks[it.stockKey].qty==null) return;
+  const s = state.stocks[it.stockKey];
+  if (on){ const d = Number(it.dose)||0; s.qty = Math.max(0, +(s.qty - d).toFixed(2)); it.taken = d; }
+  else if (it.taken){ s.qty = +(s.qty + it.taken).toFixed(2); it.taken = 0; }
+}
+function setDone(it, on){
+  if (on && !isDone(it)){ it.doneOn = todayKey(); delete it.snooze; takeDose(it, true); }
+  else if (!on && isDone(it)){ delete it.doneOn; takeDose(it, false); }
+}
+
+/* ---- Voix enregistrées (stockées dans ce navigateur) ---- */
+let idb = null;
+function idbOpen(){ return new Promise(res => { try { const r = indexedDB.open('ma-journee', 1); r.onupgradeneeded = () => r.result.createObjectStore('voices'); r.onsuccess = () => res(idb = r.result); r.onerror = () => res(null); } catch(e){ res(null); } }); }
+function idbDo(mode, fn){ return new Promise(res => { if (!idb) return res(null); try { const tx = idb.transaction('voices', mode); const st = tx.objectStore('voices'); const r = fn(st); tx.oncomplete = () => res(r && 'result' in r ? r.result : true); tx.onerror = () => res(null); } catch(e){ res(null); } }); }
+const vPut = (id, blob) => idbDo('readwrite', s => s.put(blob, id));
+const vGet = id => idbDo('readonly', s => s.get(id));
+const vDel = id => idbDo('readwrite', s => s.delete(id));
+
+/* ================= Son et voix ================= */
+let actx = null, clip = null;
+function unlockAudio(){
+  try { if (!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if (actx.state==='suspended') actx.resume(); } catch(e){}
+  try { if ('speechSynthesis' in window) speechSynthesis.getVoices(); } catch(e){}
+}
+function chime(type){
+  if (!state.settings.sound || !actx) return 0;
+  const notes = {med:[784,988,1175,1568], rdv:[659,880,1047,880,1047], tache:[523,659,784,1047]}[type] || [660,880];
+  const start = actx.currentTime + 0.05; let tt = start;
+  for (let rep=0; rep<2; rep++){
+    notes.forEach(f => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, tt); g.gain.exponentialRampToValueAtTime(0.4, tt+0.02); g.gain.exponentialRampToValueAtTime(0.0001, tt+0.55);
+      o.connect(g).connect(actx.destination); o.start(tt); o.stop(tt+0.6); tt += 0.2;
+    });
+    tt += 0.35;
+  }
+  return (tt - start) * 1000;
+}
+function beep(){ if (!actx || !state.settings.sound) return; const o=actx.createOscillator(), g=actx.createGain(); o.frequency.value=1047; g.gain.setValueAtTime(.25,actx.currentTime); g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+.3); o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime+.3); }
+function speak(text){
+  if (!state.settings.voice || !('speechSynthesis' in window)) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const pre = SPEECH[L()];
+    u.lang = {fr:'fr-FR', en:'en-GB', ar:'ar-SA'}[L()]; u.rate = 0.92;
+    const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.toLowerCase().startsWith(pre));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch(e){}
+}
+function stopSound(){ try { speechSynthesis.cancel(); } catch(e){} if (clip){ try { clip.pause(); } catch(e){} clip = null; } }
+async function playClip(id){
+  const blob = await vGet(id); if (!blob) return false;
+  try { stopSound(); clip = new Audio(URL.createObjectURL(blob)); await clip.play(); return true; } catch(e){ return false; }
+}
+function heureParlee(s){
+  if (L()!=='fr') return s;
+  const [h,m] = s.split(':').map(Number);
+  if (h===12 && m===0) return 'midi'; if (h===0 && m===0) return 'minuit';
+  return h + (h<2?' heure':' heures') + (m ? ' ' + m : '');
+}
+function phrase(a){
+  const it = a.it, tt = title(it); let s;
+  if (a.kind==='leave') s = t('sayLeave',{t:tt});
+  else if (it.type==='med') s = t('sayMed',{t:tt});
+  else if (it.type==='rdv') s = it.adv>0 ? t('sayRdvSoon',{t:tt,h:heureParlee(it.time)}) : t('sayRdv',{t:tt});
+  else s = t('sayTask',{t:tt});
+  const n = note(it); if (n) s += ' ' + n + '.';
+  if (it.type==='rdv'){ const miss = (it.bring||[]).filter(b=>!b.ok).map(bringLabel); if (miss.length) s += ' ' + t('sayBring',{l:miss.join(', ')}); }
+  if (it.type==='med'){ const si = stockInfo(it.stockKey); if (si && si.low) s += ' ' + t('sayLow',{n:si.qty,t:tt}); }
+  return s;
+}
+
+/* ================= Alertes ================= */
+let queue = [], current = null, repeatTimer = null, repeats = 0;
+function fire(it, kind){ if (current && current.it.id===it.id && current.kind===kind) return; if (queue.some(q=>q.it.id===it.id && q.kind===kind)) return; queue.push({it, kind}); if (!current) nextAlert(); }
+async function announce(){
+  if (!current) return;
+  const a = current, ms = chime(a.it.type);
+  try { navigator.vibrate && navigator.vibrate([400,200,400]); } catch(e){}
+  setTimeout(async () => {
+    if (current !== a) return;
+    let played = false;
+    if (a.it.hasVoice && a.kind!=='leave') played = await playClip(a.it.id);
+    if (!played) speak(phrase(a));
+  }, Math.min(ms, 3500));
+}
+function nextAlert(){
+  clearInterval(repeatTimer); stopSound();
+  current = queue.shift() || null;
+  const el = $('#alert');
+  if (!current){ el.hidden = true; document.title = t('appName'); return; }
+  const it = current.it, kind = current.kind;
+  el.className = 'alert ' + it.type;
+  $('#a-ico').innerHTML = `<use href="#i-${kind==='leave'?'walk':it.type}"/>`;
+  $('#a-kind').textContent = kind==='leave' ? t('leaveNow') : (it.type==='rdv' && it.adv>0 ? t('rdvIn',{x:t('x'+it.adv)}) : t(it.type));
+  $('#a-title').textContent = title(it);
+  $('#a-when').textContent = fmtTime(it.time);
+  const from = $('#a-from');
+  from.hidden = !(it.hasVoice && kind!=='leave');
+  from.querySelector('span').textContent = t('msgFrom',{n: it.ex ? EX[L()].from : (it.voiceFrom || t('voiceSome'))});
+  let nt = note(it);
+  if (it.type==='med'){ const si = stockInfo(it.stockKey); if (si) nt = (nt?nt+' · ':'') + t('pillsLeft',{n:si.qty}); }
+  if (it.type==='rdv' && place(it)) nt = place(it) + (nt?' · '+nt:'');
+  $('#a-note').textContent = nt;
+  const ab = $('#a-bring');
+  ab.innerHTML = it.type==='rdv' ? (it.bring||[]).map((b,i)=>`<label><input type="checkbox" data-ab="${i}" ${b.ok?'checked':''}>${esc(bringLabel(b))}</label>`).join('') : '';
+  el.hidden = false;
+  document.title = t('appName') + ' · ' + title(it);
+  $('#a-done').focus();
+  repeats = 0; announce();
+  repeatTimer = setInterval(() => { if (++repeats > 2) return clearInterval(repeatTimer); announce(); }, 45000);
+}
+$('#a-bring').addEventListener('change', e => {
+  const i = e.target.dataset.ab; if (i==null || !current || current.test) return;
+  const it = state.items.find(x=>x.id===current.it.id); if (it && it.bring[i]){ it.bring[i].ok = e.target.checked; save(); render(); }
+});
+$('#a-done').onclick = () => {
+  if (current && !current.test){ const it = state.items.find(i=>i.id===current.it.id); if (it && current.kind!=='leave'){ setDone(it,true); save(); } }
+  nextAlert(); render();
+};
+$('#a-snooze').onclick = () => {
+  if (current && !current.test){ const it = state.items.find(i=>i.id===current.it.id); if (it){ it.snooze = Date.now()+10*60000; save(); } }
+  nextAlert(); render();
+};
+$('#a-close').onclick = () => nextAlert();
+
+function due(){
+  const nm = nowMin(), out = [];
+  for (const it of state.items){
+    if (!isToday(it) || isDone(it)) continue;
+    const lm = leaveMin(it);
+    if (lm!=null && lm !== alertMin(it) && lm <= nm) out.push([it,'leave']);
+    if (alertMin(it) <= nm) out.push([it,'main']);
+  }
+  return out;
+}
+function tick(){
+  const tk = '@'+todayKey()+'@';
+  for (const k in state.fired) if (!k.includes(tk)) delete state.fired[k];
+  for (const it of state.items){ if (it.snooze && Date.now() >= it.snooze){ delete it.snooze; save(); if (!isDone(it)) fire(it,'main'); } }
+  for (const [it,kind] of due()){ const k = fkey(it,kind); if (!state.fired[k]){ state.fired[k] = true; save(); fire(it,kind); } }
+  renderClock(); renderNext();
+}
+function silencePast(){ const nm = nowMin(); for (const [it,kind] of due()){ const m = kind==='leave'?leaveMin(it):alertMin(it); if (m <= nm-1) state.fired[fkey(it,kind)] = true; } save(); }
+
+/* ================= Affichage ================= */
+function applyLang(){
+  const r = document.documentElement;
+  r.lang = L(); r.dir = L()==='ar' ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-t]').forEach(el => el.textContent = t(el.dataset.t));
+  document.querySelectorAll('.langs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang===L()));
+  $('#f-title').placeholder = t('whatPh'); $('#f-note').placeholder = t('notePh'); $('#f-bring').placeholder = t('bringPh');
+  $('#f-qs').placeholder = t('questionsPh'); $('#f-from').placeholder = t('voiceFromPh');
+  $('#sw-sound').setAttribute('aria-label', t('sound')); $('#sw-voice').setAttribute('aria-label', t('voice'));
+  document.title = t('appName');
+  $('#brandname').textContent = t('appName');
+}
+function renderClock(){
+  const d = new Date(), loc = LOC[L()];
+  $('#clock').textContent = pad(d.getHours())+':'+pad(d.getMinutes());
+  $('#day').textContent = d.toLocaleDateString(loc,{weekday:'long'});
+  $('#date').textContent = d.toLocaleDateString(loc,{day:'numeric',month:'long'});
+}
+const todays = () => state.items.filter(isToday).sort((a,b)=>toMin(a.time)-toMin(b.time));
+const nextItem = () => { const nm = Math.floor(nowMin()); return todays().find(it => !isDone(it) && toMin(it.time) >= nm); };
+function dans(min){ min = Math.max(0, Math.round(min)); if (min<1) return t('now'); if (min<60) return t('inMin',{n:min}); return t('inH',{h:Math.floor(min/60), m:pad(min%60)}); }
+function renderNext(){
+  const el = $('#next'), n = nextItem(), list = todays();
+  if (n){
+    const lm = leaveMin(n);
+    el.className = 'next ' + n.type;
+    el.innerHTML = `<div class="big"><svg width="34" height="34"><use href="#i-${n.type}"/></svg></div>
+      <div><small>${t('next')} · ${dans(toMin(n.time)-nowMin())}</small><h2>${esc(title(n))}</h2><p><span dir="ltr">${fmtTime(n.time)}</span> · ${t(n.type)}${lm!=null?' · '+t('leaveAt',{t:fmtTime(fromMin(lm))}):''}</p></div>`;
+  } else {
+    const left = list.filter(i=>!isDone(i)).length;
+    el.className = 'next allok';
+    el.innerHTML = `<div class="big"><svg width="34" height="34"><use href="#i-check"/></svg></div>
+      <div><small>${t('today')}</small><h2>${list.length && !left ? t('allDone') : t('nothingLeft')}</h2><p>${left ? t('lateLeft',{n:left}) : t('enjoy')}</p></div>`;
+  }
+}
+function renderStock(){
+  const keys = [...new Set(state.items.filter(i=>i.type==='med').map(i=>i.stockKey))];
+  const low = keys.map(k => [k, stockInfo(k)]).filter(([k,s]) => s && s.low);
+  const el = $('#stock'); el.hidden = !low.length;
+  if (!low.length) return;
+  el.innerHTML = `<h3><svg width="22" height="22"><use href="#i-box"/></svg>${t('stockBanner')}</h3>` + low.map(([k,s]) => {
+    const it = state.items.find(i=>i.type==='med'&&i.stockKey===k);
+    return `<div class="srow"><div><b>${esc(title(it))}</b><br><span>${t('stockRow',{n:s.qty,d:s.days})}</span></div><button class="mini" data-buy="${esc(k)}">${t('bought',{n:s.box})}</button></div>`;
+  }).join('');
+}
+function render(){
+  renderClock(); renderNext(); renderStock();
+  const list = todays(), nx = nextItem(), nm = Math.floor(nowMin());
+  const done = list.filter(isDone).length;
+  $('#prog').textContent = t('progress',{d:done, n:list.length});
+  $('#barfill').style.width = list.length ? (done/list.length*100)+'%' : '0';
+  $('#examples').hidden = !state.items.some(i=>i.ex);
+  document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.f===filter));
+  const shown = list.filter(i => filter==='all' || i.type===filter);
+  const ul = $('#list');
+  if (!shown.length){ ul.innerHTML = `<li class="empty">${t('empty')}</li>`; return; }
+  ul.innerHTML = shown.map(it => {
+    const d = isDone(it), late = !d && toMin(it.time) < nm, isNx = nx && nx.id===it.id;
+    const tags = [];
+    if (late) tags.push(`<span class="tag late">${t('late')}</span>`);
+    if (isNx) tags.push(`<span class="tag nx">${t('nextTag')}</span>`);
+    if (it.type==='med'){ const si = stockInfo(it.stockKey); if (si) tags.push(`<span class="tag ${si.low?'low':'stk'}">${si.low?t('buy')+' · ':''}${t('left',{n:si.qty})}</span>`); }
+    if (it.hasVoice) tags.push(`<span class="tag vox"><svg width="12" height="12"><use href="#i-heart"/></svg>${esc(t('voiceTag',{n: it.ex ? EX[L()].from : (it.voiceFrom||t('voiceSome'))}))}</span>`);
+    const meta = [t(it.type), it.repeat==='daily'?t('daily'):null, it.adv>0?t('before',{x:t('x'+it.adv)}):null, it.snooze?t('snoozed'):null].filter(Boolean).join(' · ');
+    let prep = '';
+    if (it.type==='rdv'){
+      const b = it.bring||[], okc = b.filter(x=>x.ok).length, lm = leaveMin(it), open = expanded.has(it.id);
+      const parts = []; if (b.length) parts.push(t('ready',{a:okc,b:b.length})); if (lm!=null) parts.push(t('leaveAt',{t:fmtTime(fromMin(lm))}));
+      if (parts.length || questions(it) || place(it)){
+        prep = `<div class="prepbar"><span>${parts.join(' · ') || esc(place(it))}</span><button class="mini" data-exp="${it.id}" aria-expanded="${open}">${open?t('hide'):t('prep')}</button></div>`;
+        if (open) prep += `<div class="prep">
+          ${place(it)?`<div><h4>${t('place')}</h4><div>${esc(place(it))}</div></div>`:''}
+          ${b.length?`<div><h4>${t('bring')}</h4><div class="bring">${b.map((x,i)=>`<label class="${x.ok?'ok':''}"><input type="checkbox" data-bring="${it.id}:${i}" ${x.ok?'checked':''}>${esc(bringLabel(x))}</label>`).join('')}</div></div>`:''}
+          ${questions(it)?`<div><h4>${t('questions')}</h4><div class="qs">${esc(questions(it))}</div></div>`:''}
+        </div>`;
+      }
+    }
+    return `<li class="item ${it.type} ${d?'done':''} ${isNx?'isnext':''}">
+      <div class="main">
+        <div class="t" dir="ltr">${it.time}</div>
+        <div class="bubble"><svg width="26" height="26"><use href="#i-${it.type}"/></svg></div>
+        <button class="body" data-edit="${it.id}">
+          <div class="ttl">${esc(title(it))}</div>
+          <div class="meta">${tags.join('')}<span>${esc(meta)}</span></div>
+          ${note(it)?`<div class="meta">${esc(note(it))}</div>`:''}
+        </button>
+        <button class="check" data-check="${it.id}" aria-label="${esc(title(it))}" aria-pressed="${d}"><svg width="24" height="24"><use href="#i-check"/></svg></button>
+      </div>${prep}
+    </li>`;
+  }).join('');
+}
+
+/* ================= Interactions ================= */
+$('#list').addEventListener('click', e => {
+  const c = e.target.closest('[data-check]'), ed = e.target.closest('[data-edit]'), ex = e.target.closest('[data-exp]');
+  if (c){ const it = state.items.find(i=>i.id===c.dataset.check); const on = !isDone(it); setDone(it,on); if (on) beep(); save(); render(); }
+  else if (ex){ const id = ex.dataset.exp; expanded.has(id) ? expanded.delete(id) : expanded.add(id); render(); }
+  else if (ed) openForm(state.items.find(i=>i.id===ed.dataset.edit));
+});
+$('#list').addEventListener('change', e => {
+  const b = e.target.dataset.bring; if (!b) return;
+  const [id,i] = b.split(':'); const it = state.items.find(x=>x.id===id); if (it && it.bring[i]){ it.bring[i].ok = e.target.checked; save(); render(); }
+});
+$('#stock').addEventListener('click', e => {
+  const b = e.target.closest('[data-buy]'); if (!b) return;
+  const s = state.stocks[b.dataset.buy]; if (s){ s.qty = +(Number(s.qty) + Number(s.box||30)).toFixed(2); save(); render(); }
+});
+document.querySelectorAll('.chip').forEach(c => c.onclick = () => { filter = c.dataset.f; render(); });
+document.querySelectorAll('.langs button').forEach(b => b.onclick = () => { state.lang = b.dataset.lang; save(); applyLang(); render(); });
+$('#clearEx').onclick = () => { state.items.filter(i=>i.ex && i.hasVoice).forEach(i=>vDel(i.id)); state.items = state.items.filter(i=>!i.ex); save(); render(); };
+
+$('#unlock').onclick = () => { unlockAudio(); $('#unlock').hidden = true; const ms = chime('tache'); setTimeout(() => speak(t('sayUnlock')), Math.min(ms||0, 3000)); };
+document.addEventListener('pointerdown', () => unlockAudio(), {once:true});
+function setSwitch(id, on){ $(id).setAttribute('aria-checked', on); }
+$('#sw-sound').onclick = () => { state.settings.sound = !state.settings.sound; setSwitch('#sw-sound', state.settings.sound); save(); };
+$('#sw-voice').onclick = () => { state.settings.voice = !state.settings.voice; setSwitch('#sw-voice', state.settings.voice); save(); };
+$('#test').onclick = () => {
+  unlockAudio(); $('#unlock').hidden = true;
+  const n = nextItem() || todays()[0];
+  const it = n || {id:'test', type:'med', title:t('sample'), time:'08:00', adv:0, note:''};
+  queue.push({it, kind:'main', test:true}); if (!current) nextAlert();
+};
+
+/* ---- Formulaire ---- */
+function setType(tp){ formType = tp; $('#form').dataset.type = tp; document.querySelectorAll('.type').forEach(b => b.setAttribute('aria-pressed', b.dataset.type===tp)); }
+function setRepeat(r){ formRepeat = r; document.querySelectorAll('#seg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.r===r)); }
+document.querySelectorAll('.type').forEach(b => b.onclick = () => setType(b.dataset.type));
+document.querySelectorAll('#seg button').forEach(b => b.onclick = () => setRepeat(b.dataset.r));
+
+function renderSug(){
+  const sugBtns = SUG.map(k => `<button type="button" data-sug="${k}" aria-pressed="${formBring.some(b=>b.k===k)}">${t(k)}</button>`);
+  const custom = formBring.filter(b=>!b.k).map((b,i) => `<button type="button" data-cus="${i}" aria-pressed="true">${esc(b.label)} ✕</button>`);
+  $('#sug').innerHTML = sugBtns.concat(custom).join('');
+}
+$('#sug').addEventListener('click', e => {
+  const s = e.target.closest('[data-sug]'), c = e.target.closest('[data-cus]');
+  if (s){ const k = s.dataset.sug, i = formBring.findIndex(b=>b.k===k); i>=0 ? formBring.splice(i,1) : formBring.push({k, ok:false}); renderSug(); }
+  if (c){ const customs = formBring.filter(b=>!b.k); const target = customs[c.dataset.cus]; formBring = formBring.filter(b=>b!==target); renderSug(); }
+});
+function addBring(){ const v = $('#f-bring').value.trim(); if (v){ formBring.push({label:v, ok:false}); $('#f-bring').value=''; renderSug(); } }
+$('#bringAdd').onclick = addBring;
+$('#f-bring').addEventListener('keydown', e => { if (e.key==='Enter'){ e.preventDefault(); addBring(); } });
+
+function renderVoice(){
+  const has = formVoice instanceof Blob || (formVoice==='keep');
+  $('#vstate').innerHTML = (has ? `<span>${t('voiceReady')}</span><button type="button" class="mini" id="vplay">${t('voicePlay')}</button><button type="button" class="mini" id="vrem">${t('voiceRemove')}</button>` : '')
+    + `<label class="filebtn" for="f-audio"><svg width="20" height="20"><use href="#i-heart"/></svg>${has?t('voiceChange'):t('voicePick')}<input id="f-audio" type="file" accept="audio/*"></label>`;
+}
+$('#vstate').addEventListener('click', async e => {
+  if (e.target.id==='vplay'){ unlockAudio(); if (formVoice instanceof Blob){ stopSound(); clip = new Audio(URL.createObjectURL(formVoice)); clip.play().catch(()=>{}); } else if (editing) playClip(editing.id); }
+  if (e.target.id==='vrem'){ stopSound(); formVoice = 'remove'; renderVoice(); }
+});
+$('#vstate').addEventListener('change', e => {
+  if (e.target.id!=='f-audio') return;
+  const f = e.target.files && e.target.files[0], err = $('#verr'); err.hidden = true;
+  if (!f) return;
+  if (f.type && !f.type.startsWith('audio') && !/\.(m4a|mp3|ogg|opus|wav|aac|amr|3gp|webm)$/i.test(f.name)){ err.textContent = t('voiceBad'); err.hidden = false; return; }
+  if (f.size > 10*1024*1024){ err.textContent = t('voiceTooBig'); err.hidden = false; return; }
+  formVoice = f; renderVoice();
+});
+
+function openForm(it){
+  editing = it || null;
+  $('#formTitle').textContent = it ? t('editR') : t('newR');
+  $('#f-title').value = it ? title(it) : '';
+  const d = new Date(Date.now()+60*60000);
+  $('#f-time').value = it ? it.time : pad(d.getHours())+':00';
+  $('#f-adv').value = it ? String(it.adv||0) : '0';
+  $('#f-note').value = it ? note(it) : '';
+  setType(it ? it.type : 'med'); setRepeat(it ? it.repeat : 'once');
+  const s = it && it.type==='med' ? state.stocks[it.stockKey] : null;
+  $('#f-dose').value = it && it.dose!=null ? it.dose : 1;
+  $('#f-qty').value = s && s.qty!=null ? s.qty : '';
+  $('#f-boxsz').value = s && s.box ? s.box : 30;
+  $('#f-place').value = it ? place(it) : '';
+  $('#f-travel').value = it && it.travel ? it.travel : '';
+  $('#f-qs').value = it ? questions(it) : '';
+  formBring = it && it.bring ? it.bring.map(b => ({...b})) : [];
+  $('#f-from').value = it ? (it.ex ? (it.hasVoice?EX[L()].from:'') : (it.voiceFrom||'')) : '';
+  formVoice = it && it.hasVoice ? 'keep' : null; $('#verr').hidden = true;
+  renderSug(); renderVoice();
+  const del = $('#del'); del.hidden = !it; del.textContent = t('del'); del.dataset.armed = '';
+  $('#scrim').hidden = false;
+  setTimeout(() => $('#f-title').focus(), 50);
+}
+function closeForm(){ stopSound(); $('#scrim').hidden = true; editing = null; }
+$('#add').onclick = () => { unlockAudio(); openForm(null); };
+$('#cancel').onclick = closeForm;
+$('#scrim').addEventListener('click', e => { if (e.target.id==='scrim') closeForm(); });
+document.addEventListener('keydown', e => { if (e.key==='Escape' && !$('#scrim').hidden) closeForm(); });
+$('#del').onclick = () => {
+  const b = $('#del');
+  if (!b.dataset.armed){ b.dataset.armed = '1'; b.textContent = t('delConfirm'); return; }
+  if (editing.hasVoice) vDel(editing.id);
+  state.items = state.items.filter(i => i.id !== editing.id); save(); closeForm(); render();
+};
+$('#form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const ttl = $('#f-title').value.trim(), time = $('#f-time').value;
+  if (!ttl || !time) return;
+  const it = editing || {id:uid(), date:todayKey()};
+  const wasDone = editing && isDone(editing);
+  Object.assign(it, {type:formType, title:ttl, time, repeat:formRepeat, adv:Number($('#f-adv').value), note:$('#f-note').value.trim(), voiceFrom:$('#f-from').value.trim()});
+  if (!editing) it.date = todayKey();
+  if (formType==='med'){
+    it.dose = Number($('#f-dose').value)||1;
+    it.stockKey = it.ex ? it.stockKey : norm(ttl);
+    const q = $('#f-qty').value;
+    if (q!==''){ state.stocks[it.stockKey] = {qty:Number(q), box:Number($('#f-boxsz').value)||30}; }
+  }
+  if (formType==='rdv'){
+    it.place = $('#f-place').value.trim(); it.travel = Number($('#f-travel').value)||0;
+    it.questions = $('#f-qs').value.trim(); it.bring = formBring;
+  }
+  if (formVoice instanceof Blob){ const ok = await vPut(it.id, formVoice); it.hasVoice = !!ok; }
+  else if (formVoice==='remove'){ await vDel(it.id); it.hasVoice = false; }
+  if (it.ex) delete it.ex;
+  if (!editing) state.items.push(it);
+  if (wasDone) it.doneOn = todayKey();
+  const nm = nowMin();
+  if (alertMin(it) <= nm-1) state.fired[fkey(it,'main')] = true;
+  const lm = leaveMin(it); if (lm!=null && lm <= nm-1) state.fired[fkey(it,'leave')] = true;
+  save(); closeForm(); render();
+});
+
+/* ================= Démarrage ================= */
+load();
+idbOpen();
+applyLang();
+setSwitch('#sw-sound', state.settings.sound); setSwitch('#sw-voice', state.settings.voice);
+silencePast();
+render();
+setInterval(tick, 5000);
+setInterval(render, 60000);
+</script>
+
+<script>
+/* Rappello — couche native Android (Capacitor)
+   Programme de vraies notifications système qui sonnent même téléphone verrouillé.
+   Sur un simple navigateur, ce fichier ne fait rien. */
+(function () {
+  const Cap = window.Capacitor;
+  if (!Cap || !Cap.isNativePlatform || !Cap.isNativePlatform()) return;
+  const LN = Cap.Plugins && Cap.Plugins.LocalNotifications;
+  if (!LN) return;
+
+  const DAYS_AHEAD = 7;                 // on programme les 7 prochains jours
+  const KINDS = { main: 0, leave: 1, snooze: 2 };
+
+  function baseHash(id) {
+    let h = 0;
+    for (const c of String(id)) h = (h * 31 + c.charCodeAt(0)) | 0;
+    return Math.abs(h) % 100000;
+  }
+  const nid = (id, kind, day) => baseHash(id) * 100 + day * 4 + KINDS[kind] + 1;
+
+  function dayStart(offset) { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + offset); return d; }
+  // heure locale exacte, même les jours de changement d'heure
+  const atMin = (d0, min) => new Date(d0.getFullYear(), d0.getMonth(), d0.getDate(), 0, min);
+  function dateFromKey(k) { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); }
+
+  function buildList() {
+    const now = Date.now(), out = [];
+    const push = (it, kind, at, day) => {
+      if (at.getTime() <= now + 5000) return;
+      out.push({
+        id: nid(it.id, kind, day),
+        title: kind === 'leave' ? t('leaveNow') : t(it.type) + ' · ' + fmtTime(it.time),
+        body: phrase({ it, kind: kind === 'leave' ? 'leave' : 'main' }),
+        schedule: { at, allowWhileIdle: true },
+        channelId: 'rappels',
+        actionTypeId: 'RAPPEL',
+        extra: { id: it.id, kind: kind === 'leave' ? 'leave' : 'main' }
+      });
+    };
+    for (const it of state.items) {
+      const days = it.repeat === 'daily'
+        ? Array.from({ length: DAYS_AHEAD }, (_, i) => [i, dayStart(i)])
+        : [[0, dateFromKey(it.date || todayKey())]];
+      for (const [i, d0] of days) {
+        if (i === 0 && isDone(it)) continue;
+        const main = atMin(d0, alertMin(it));
+        push(it, 'main', main, i);
+        const lm = leaveMin(it);
+        if (lm != null && lm !== alertMin(it)) push(it, 'leave', atMin(d0, lm), i);
+      }
+      if (it.snooze && !isDone(it)) push(it, 'snooze', new Date(it.snooze), 0);
+    }
+    return out;
+  }
+
+  let lastSig = '', timer = null;
+  async function scheduleAll() {
+    try {
+      const list = buildList();
+      const sig = JSON.stringify(list.map(n => [n.id, n.schedule.at.getTime(), n.body, n.title]));
+      if (sig === lastSig) return;
+      lastSig = sig;
+      const pending = await LN.getPending();
+      if (pending.notifications && pending.notifications.length) {
+        await LN.cancel({ notifications: pending.notifications.map(n => ({ id: n.id })) });
+      }
+      if (list.length) await LN.schedule({ notifications: list });
+    } catch (e) { console.warn('Programmation des rappels impossible', e); }
+  }
+  const later = () => { clearTimeout(timer); timer = setTimeout(scheduleAll, 800); };
+
+  // Chaque enregistrement reprogramme les notifications
+  const origSave = window.save;
+  window.save = function () { origSave(); later(); };
+
+  async function registerTypes() {
+    try {
+      await LN.registerActionTypes({ types: [{ id: 'RAPPEL', actions: [
+        { id: 'done', title: t('done') },
+        { id: 'snooze', title: t('snooze') }
+      ] }] });
+    } catch (e) {}
+  }
+
+  async function init() {
+    try { await LN.requestPermissions(); } catch (e) {}
+    try {
+      await LN.createChannel({ id: 'rappels', name: 'Rappels', description: 'Médicaments, rendez-vous et tâches',
+        importance: 5, visibility: 1, vibration: true, lights: true, lightColor: '#4F46E5' });
+    } catch (e) {}
+    try {
+      // Android 12+ : autoriser les alarmes exactes pour sonner à l'heure pile
+      if (LN.checkExactNotificationSetting) {
+        const s = await LN.checkExactNotificationSetting();
+        if (s && s.exact_alarm && s.exact_alarm !== 'granted' && LN.changeExactNotificationSetting) {
+          await LN.changeExactNotificationSetting();
+        }
+      }
+    } catch (e) {}
+    await registerTypes();
+
+    // Notification reçue pendant que l'application est ouverte : écran d'alerte
+    LN.addListener('localNotificationReceived', n => {
+      const ex = n.extra || {}, it = state.items.find(i => i.id === ex.id);
+      if (!it) return;
+      state.fired[fkey(it, ex.kind)] = true;
+      fire(it, ex.kind);
+    });
+    // Bouton touché sur la notification (même téléphone verrouillé)
+    LN.addListener('localNotificationActionPerformed', ev => {
+      const ex = (ev.notification && ev.notification.extra) || {}, it = state.items.find(i => i.id === ex.id);
+      if (!it) return;
+      if (ev.actionId === 'done') { setDone(it, true); save(); render(); }
+      else if (ev.actionId === 'snooze') { it.snooze = Date.now() + 10 * 60000; save(); render(); }
+      else { unlockAudio(); state.fired[fkey(it, ex.kind)] = true; fire(it, ex.kind); } // ouverture : voix du proche
+    });
+
+    // Langue changée : met à jour les boutons des notifications
+    document.querySelectorAll('.langs button').forEach(b => b.addEventListener('click', () => { registerTypes(); later(); }));
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { render(); later(); } });
+
+    scheduleAll();
+  }
+  init();
+})();
+</script>
+</body></html>
