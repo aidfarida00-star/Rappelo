@@ -1,4 +1,4 @@
-# Rappello — application Android
+# RappelMe — application Android
 
 Rappels de médicaments, rendez-vous et tâches, avec sons, voix (français, anglais, arabe), la voix d'un proche, la préparation des rendez-vous et le suivi des stocks.
 
@@ -12,14 +12,14 @@ Pas besoin d'installer de logiciel. Comptez 15 minutes la première fois.
 
 1. **Créez un compte gratuit** sur https://github.com (bouton « Sign up »).
 2. Cliquez sur **« + »** en haut à droite, puis **« New repository »**.
-   Nom : `rappello`. Choisissez **Private**. Cliquez **« Create repository »**.
+   Nom : `rappelme`. Choisissez **Private**. Cliquez **« Create repository »**.
 3. Sur la page qui s'affiche, cliquez le lien **« uploading an existing file »**.
-4. Décompressez le fichier `rappello.zip` sur votre ordinateur, ouvrez le dossier `rappello`, **sélectionnez tout son contenu** et glissez-le dans la page GitHub. Cliquez **« Commit changes »**.
+4. Décompressez le fichier `rappelme.zip` sur votre ordinateur, ouvrez le dossier `rappelme`, **sélectionnez tout son contenu** et glissez-le dans la page GitHub. Cliquez **« Commit changes »**.
    ⚠️ Le dossier caché `.github` doit aussi être envoyé. Sur Mac, appuyez sur Cmd + Maj + . pour voir les fichiers cachés. Sur Windows : menu Affichage › Éléments masqués.
    Si l'onglet « Actions » propose seulement des modèles (le dossier caché n'est pas passé), cliquez **« set up a workflow yourself »**, effacez le texte proposé, collez le contenu du fichier `construire-application.yml` (fourni en double à la racine du dossier) et cliquez **« Commit changes »**.
 5. Ouvrez l'onglet **« Actions »**. La construction démarre toute seule (environ 5 à 8 minutes). Si rien ne se lance, cliquez « Construire l'application Android » puis **« Run workflow »**.
-6. Quand le rond devient vert ✅, cliquez dessus. En bas, section « Artifacts », téléchargez **Rappello-application-android**. C'est un .zip qui contient **Rappello.apk**.
-7. Envoyez `Rappello.apk` sur votre téléphone Android (e-mail à vous-même, WhatsApp, câble USB…), ouvrez-le et acceptez **« Installer des applications inconnues »** quand le téléphone le demande.
+6. Quand le rond devient vert ✅, cliquez dessus. En bas, section « Artifacts », téléchargez **RappelMe-application-android**. C'est un .zip qui contient **RappelMe.apk**.
+7. Envoyez `RappelMe.apk` sur votre téléphone Android (e-mail à vous-même, WhatsApp, câble USB…), ouvrez-le et acceptez **« Installer des applications inconnues »** quand le téléphone le demande.
 
 ## Méthode 2 : avec Android Studio (pour une personne à l'aise avec l'informatique)
 

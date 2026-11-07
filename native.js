@@ -1,4 +1,4 @@
-/* Rappello — couche native Android (Capacitor)
+/* RappelMe — couche native Android (Capacitor)
    Programme de vraies notifications système qui sonnent même téléphone verrouillé.
    Sur un simple navigateur, ce fichier ne fait rien. */
 (function () {

@@ -1,4 +1,4 @@
-name: Construire l'application Android
+name: Construire RappelMe
 
 on:
   push:
@@ -16,15 +16,18 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - name: Installer les outils
-        run: npm install
-      - name: Créer le projet Android
-        run: npm run android:init
       - name: Construire l'application
-        run: cd android && chmod +x gradlew && ./gradlew assembleDebug
-      - name: Préparer le fichier
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk Rappello.apk
+        run: |
+          DIR=$(dirname "$(find . -name capacitor.config.json -not -path '*/node_modules/*' | head -1)")
+          echo "Projet trouve dans : $DIR"
+          cd "$DIR"
+          npm install
+          npm run android:init
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/RappelMe.apk"
       - uses: actions/upload-artifact@v4
         with:
-          name: Rappello-application-android
-          path: Rappello.apk
+          name: RappelMe-application-android
+          path: RappelMe.apk

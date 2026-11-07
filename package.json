@@ -1,8 +1,8 @@
 {
-  "name": "rappello",
+  "name": "rappelme",
   "version": "1.0.0",
   "private": true,
-  "description": "Rappello : rappels de médicaments, rendez-vous et tâches, avec la voix d'un proche.",
+  "description": "RappelMe : rappels de médicaments, rendez-vous et tâches, avec la voix d'un proche.",
   "scripts": {
     "android:init": "npx cap add android && node scripts/patch-android.js && npx cap sync android",
     "sync": "npx cap sync android"

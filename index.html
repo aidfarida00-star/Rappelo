@@ -1,5 +1,5 @@
 <!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
-<title>Rappello</title>
+<title>RappelMe</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -208,7 +208,7 @@ input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-we
 
 <main class="app">
   <div class="brandbar">
-  <div class="brand"><span class="logo" aria-hidden="true"><svg width="20" height="20"><use href="#i-bell"/></svg></span><span id="brandname">Rappello</span></div>
+  <div class="brand"><span class="logo" aria-hidden="true"><svg width="20" height="20"><use href="#i-bell"/></svg></span><span id="brandname">RappelMe</span></div>
   <div class="langs" role="group" aria-label="Langue / Language / اللغة">
     <button data-lang="fr" aria-pressed="true">FR</button>
     <button data-lang="en" aria-pressed="false">EN</button>
@@ -331,7 +331,7 @@ input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-we
 <script>
 /* ================= Textes FR / EN / AR ================= */
 const T = {
-fr:{appName:"Rappello",unlockTitle:"Activer les sons et la voix",unlockText:"Touchez ici une fois pour que les rappels puissent sonner et parler.",
+fr:{appName:"RappelMe",unlockTitle:"Activer les sons et la voix",unlockText:"Touchez ici une fois pour que les rappels puissent sonner et parler.",
 next:"Prochain rappel",inMin:"dans {n} min",inH:"dans {h} h {m}",now:"maintenant",today:"Aujourd'hui",allDone:"Tout est fait, bravo !",nothingLeft:"Plus rien de prévu",lateLeft:"{n} rappel(s) en retard à cocher plus bas",enjoy:"Profitez de votre journée",
 progress:"{d} sur {n} faits",all:"Tout",fMed:"Médicaments",fRdv:"Rendez-vous",fTache:"Tâches",med:"Médicament",rdv:"Rendez-vous",tache:"Tâche",
 examplesNote:"Ce sont des exemples. Touchez un rappel pour le modifier.",clearEx:"Effacer les exemples",late:"En retard",nextTag:"Prochain",daily:"Tous les jours",before:"prévenir {x} avant",snoozed:"reporté de 10 min",
@@ -345,7 +345,7 @@ voiceTitle:"La voix d'un proche",voiceHelp:"Un proche enregistre un message avec
 done:"C'est fait",snooze:"Me rappeler dans 10 min",close:"Fermer",rdvIn:"Rendez-vous dans {x}",pillsLeft:"Il reste {n} comprimés",msgFrom:"Message de {n}",
 sayMed:"C'est l'heure de votre médicament : {t}.",sayRdvSoon:"Rappel : {t}, à {h}.",sayRdv:"C'est l'heure de votre rendez-vous : {t}.",sayTask:"N'oubliez pas : {t}.",sayLeave:"C'est l'heure de partir pour {t}.",sayBring:"Pensez à emporter : {l}.",sayLow:"Attention, il ne reste que {n} comprimés de {t}.",sayUnlock:"Les rappels sonores sont activés.",
 empty:"Aucun rappel ici pour aujourd'hui. Touchez « Ajouter un rappel » en bas de l'écran.",sample:"Exemple de médicament"},
-en:{appName:"Rappello",unlockTitle:"Turn on sound and voice",unlockText:"Tap here once so reminders can ring and speak.",
+en:{appName:"RappelMe",unlockTitle:"Turn on sound and voice",unlockText:"Tap here once so reminders can ring and speak.",
 next:"Next reminder",inMin:"in {n} min",inH:"in {h} h {m}",now:"now",today:"Today",allDone:"All done, well done!",nothingLeft:"Nothing else planned",lateLeft:"{n} late reminder(s) to tick below",enjoy:"Enjoy your day",
 progress:"{d} of {n} done",all:"All",fMed:"Medicines",fRdv:"Appointments",fTache:"Tasks",med:"Medicine",rdv:"Appointment",tache:"Task",
 examplesNote:"These are examples. Tap a reminder to edit it.",clearEx:"Clear examples",late:"Late",nextTag:"Next",daily:"Every day",before:"alert {x} before",snoozed:"snoozed 10 min",
@@ -359,7 +359,7 @@ voiceTitle:"A loved one's voice",voiceHelp:"A loved one records a message on the
 done:"Done",snooze:"Remind me in 10 min",close:"Close",rdvIn:"Appointment in {x}",pillsLeft:"{n} pills left",msgFrom:"Message from {n}",
 sayMed:"Time for your medicine: {t}.",sayRdvSoon:"Reminder: {t}, at {h}.",sayRdv:"Time for your appointment: {t}.",sayTask:"Don't forget: {t}.",sayLeave:"Time to leave for {t}.",sayBring:"Remember to bring: {l}.",sayLow:"Careful, only {n} pills of {t} left.",sayUnlock:"Sound reminders are on.",
 empty:"No reminders here today. Tap “Add a reminder” at the bottom of the screen.",sample:"Sample medicine"},
-ar:{appName:"رابيلو",unlockTitle:"تفعيل الصوت والكلام",unlockText:"اضغط هنا مرة واحدة ليتمكن التطبيق من الرنين والكلام.",
+ar:{appName:"رابل مي",unlockTitle:"تفعيل الصوت والكلام",unlockText:"اضغط هنا مرة واحدة ليتمكن التطبيق من الرنين والكلام.",
 next:"التذكير القادم",inMin:"بعد {n} دقيقة",inH:"بعد {h} س {m} د",now:"الآن",today:"اليوم",allDone:"أنجزت كل شيء، أحسنت!",nothingLeft:"لا شيء آخر مخطط له",lateLeft:"{n} تذكير متأخر في الأسفل",enjoy:"يوما سعيدا",
 progress:"{d} من {n} تم",all:"الكل",fMed:"الأدوية",fRdv:"المواعيد",fTache:"المهام",med:"دواء",rdv:"موعد",tache:"مهمة",
 examplesNote:"هذه أمثلة. اضغط على أي تذكير لتعديله.",clearEx:"حذف الأمثلة",late:"متأخر",nextTag:"التالي",daily:"كل يوم",before:"تنبيه قبل {x}",snoozed:"مؤجل 10 دقائق",
@@ -830,7 +830,7 @@ setInterval(render, 60000);
 </script>
 
 <script>
-/* Rappello — couche native Android (Capacitor)
+/* RappelMe — couche native Android (Capacitor)
    Programme de vraies notifications système qui sonnent même téléphone verrouillé.
    Sur un simple navigateur, ce fichier ne fait rien. */
 (function () {
