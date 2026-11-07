@@ -1,6 +1,6 @@
 {
   "appId": "com.rappello.app",
-  "appName": "Rappello",
+  "appName": "RappelMe",
   "webDir": "www",
   "plugins": {
     "LocalNotifications": {
