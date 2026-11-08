@@ -1,5 +1,5 @@
 <!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
-<title>Rappello</title>
+<title>RappelMe</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +14,7 @@
   --tache:#C87800; --tache-soft:#FFF0D2;
   --ok:#1E9A65; --ok-soft:#DDF5EA;
   --late:#D2452B; --warn-soft:#FFEBD9;
+  --pri:#0B7F7A; --pri-soft:#D9F3F1;
   --on-color:#FFFFFF;
   --shadow:0 6px 24px rgba(40,46,110,.10);
   --f-display:"Fredoka","Nunito","Trebuchet MS",system-ui,sans-serif;
@@ -23,15 +24,16 @@
   --bg:#11132A; --surface:#1B1E3B; --surface-2:#242850; --ink:#EEF0FF; --muted:#A6ABCF; --line:#2E3260;
   --accent:#8C84FF; --accent-ink:#11132A;
   --med:#FF6E8E; --med-soft:#3A1D2E; --rdv:#4FB4F6; --rdv-soft:#15304C; --tache:#FFB83D; --tache-soft:#3A2D12;
-  --ok:#3ECD8D; --ok-soft:#163A2C; --late:#FF7A5C; --warn-soft:#3A2418; --on-color:#12142A; --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme:dark}}
+  --ok:#3ECD8D; --ok-soft:#163A2C; --pri:#4FD1C5; --pri-soft:#123B3A; --late:#FF7A5C; --warn-soft:#3A2418; --on-color:#12142A; --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#11132A; --surface:#1B1E3B; --surface-2:#242850; --ink:#EEF0FF; --muted:#A6ABCF; --line:#2E3260;
   --accent:#8C84FF; --accent-ink:#11132A;
   --med:#FF6E8E; --med-soft:#3A1D2E; --rdv:#4FB4F6; --rdv-soft:#15304C; --tache:#FFB83D; --tache-soft:#3A2D12;
-  --ok:#3ECD8D; --ok-soft:#163A2C; --late:#FF7A5C; --warn-soft:#3A2418; --on-color:#12142A; --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme:dark}
+  --ok:#3ECD8D; --ok-soft:#163A2C; --pri:#4FD1C5; --pri-soft:#123B3A; --late:#FF7A5C; --warn-soft:#3A2418; --on-color:#12142A; --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme:dark}
 :root[lang="ar"]{ --f-display:"Cairo","Fredoka",system-ui,sans-serif; --f-body:"Cairo","Nunito",system-ui,sans-serif; }
 
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.45}
 .app{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 120px;display:flex;flex-direction:column;gap:18px}
 h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
@@ -61,12 +63,54 @@ svg{flex:none}
 .unlock span{color:var(--muted);font-size:15px}
 
 .next{border-radius:26px;padding:20px 22px;color:var(--on-color);display:flex;gap:16px;align-items:center;box-shadow:var(--shadow);background:var(--accent)}
-.next.med{background:var(--med)} .next.rdv{background:var(--rdv)} .next.tache{background:var(--tache)} .next.allok{background:var(--ok)}
+.next.med{background:var(--med)} .next.rdv{background:var(--rdv)} .next.tache{background:var(--tache)} .next.pri{background:var(--pri)} .next.allok{background:var(--ok)}
 .next .big{width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,.22);display:grid;place-items:center}
 .next small{font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:13px;opacity:.9}
 .next h2{font-size:24px;font-weight:600;line-height:1.15;overflow-wrap:anywhere}
 .next p{margin:2px 0 0;font-weight:700;opacity:.95}
 .next>div:last-child{min-width:0}
+
+/* Prières */
+.prayers{background:var(--surface);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.prhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.prhead h3{font-size:18px;font-weight:600;color:var(--pri);display:flex;align-items:center;gap:8px}
+.prhead span{font-size:14px;color:var(--muted);font-weight:700}
+.prgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.prc{border-radius:14px;background:var(--pri-soft);padding:8px 2px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.prc b{font-size:13px;font-weight:800;color:var(--pri);overflow-wrap:anywhere}
+.prc span{font-family:"Fredoka",var(--f-display);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.prc.past{opacity:.5}
+.prc.nx{background:var(--pri)} .prc.nx b,.prc.nx span{color:var(--on-color)}
+.prfoot{font-size:13px;color:var(--muted)}
+.box.pri h3{color:var(--pri)}
+.prgrid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:420px){.prgrid2{grid-template-columns:1fr}.prc span{font-size:16px}}
+
+/* Sons */
+.sndrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 8px;align-items:center}
+.sndrow label{grid-column:1 / -1;font-weight:700;font-size:14px;color:var(--muted)}
+.sndrow select{font-size:16px;padding:10px 12px}
+.sndrow .mini{background:var(--surface-2);padding:12px 14px}
+.sndrows{display:flex;flex-direction:column;gap:10px}
+.seg.seg3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.seg.seg3 button{padding:10px 4px;font-size:15px}
+.subt{font-weight:800;font-size:15px;margin-top:4px}
+
+/* Annonce de la prière */
+.phlist{display:flex;flex-direction:column;gap:8px}
+.ph{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--surface-2);border:2px solid transparent;border-radius:16px;padding:10px 12px;cursor:pointer}
+.ph.on{border-color:var(--pri);background:var(--pri-soft)}
+.ph input{width:22px;height:22px;padding:0;accent-color:var(--pri)}
+.ph .phtxt b{display:block;font-family:"Cairo",var(--f-body);font-size:20px;font-weight:700;line-height:1.3}
+.ph .phtxt small{display:block;color:var(--muted);font-size:13px;font-weight:600}
+.ph .mini{background:var(--surface)}
+.ph.fajrrow{grid-template-columns:minmax(0,1fr) auto auto;cursor:default}
+.ph.fajrrow .phtxt b{font-size:16px}
+.ph.fajrrow .phtxt{grid-column:1 / -1}
+.ph.fajrrow .mini{grid-column:2}
+.ph.fajrrow .switch{grid-column:3}
+:root[dir="ltr"] .ph .phtxt b[dir="rtl"]{text-align:left}
+.alert .callar{font-family:"Cairo",sans-serif;font-size:clamp(26px,8vw,36px);font-weight:700;line-height:1.3}
 
 /* Stock */
 .stock{background:var(--warn-soft);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
@@ -95,6 +139,7 @@ svg{flex:none}
 .med .bubble{background:var(--med-soft);color:var(--med)}
 .rdv .bubble{background:var(--rdv-soft);color:var(--rdv)}
 .tache .bubble{background:var(--tache-soft);color:var(--tache)}
+.pri .bubble{background:var(--pri-soft);color:var(--pri)}
 .body{min-width:0;text-align:start;background:none;border:0;padding:0}
 .ttl{font-weight:800;font-size:18px;line-height:1.25;overflow-wrap:anywhere}
 .meta{font-size:14px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:3px}
@@ -175,7 +220,7 @@ input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-we
 
 /* Alerte plein écran */
 .alert{position:fixed;inset:0;z-index:30;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;color:var(--on-color);padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-bottom,0px));padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));background:var(--accent)}
-.alert.med{background:var(--med)} .alert.rdv{background:var(--rdv)} .alert.tache{background:var(--tache)}
+.alert.med{background:var(--med)} .alert.rdv{background:var(--rdv)} .alert.tache{background:var(--tache)} .alert.pri{background:var(--pri)}
 .ring{width:116px;height:116px;border-radius:50%;background:rgba(255,255,255,.25);display:grid;place-items:center;animation:pulse 1.4s ease-in-out infinite;flex:none}
 @keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,255,255,.5)}50%{transform:scale(1.06);box-shadow:0 0 0 22px rgba(255,255,255,0)}}
 .alert small{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:15px}
@@ -191,6 +236,89 @@ input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-we
 .alert .btn.big{background:#fff;color:#1D2142;font-size:22px}
 @media (prefers-reduced-motion:reduce){.ring{animation:none}.bar i{transition:none}}
 @media (max-width:420px){.main{grid-template-columns:52px 42px 1fr 48px;gap:9px}.bubble{width:42px;height:42px}.t{font-size:18px}.three{grid-template-columns:1fr 1fr}}
+
+/* ================= Nouvelle apparence : ciel du jour + couleurs vives ================= */
+:root{
+  --bg:#F5F3FC; --line:#E4E1F3; --surface-2:#EFEDF9;
+  --accent:#5B3FE0; --accent-1:#9B5CF6;
+  --med-1:#FF7A98; --rdv-1:#4FB4FF; --tache-1:#FFC046; --pri-1:#2ED3B7; --ok-1:#3DDC97;
+  --card-shadow:0 2px 12px rgba(60,40,140,.07);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#100F24; --surface:#1B1A38; --surface-2:#252347; --line:#302D5C;
+  --accent:#9B87FF; --accent-1:#D08CFF;
+  --med-1:#FF9DB4; --rdv-1:#8CD0FF; --tache-1:#FFD27A; --pri-1:#7EEBD9; --ok-1:#7DEBB8; --card-shadow:0 2px 12px rgba(0,0,0,.35)}}
+:root[data-theme="dark"]{
+  --bg:#100F24; --surface:#1B1A38; --surface-2:#252347; --line:#302D5C;
+  --accent:#9B87FF; --accent-1:#D08CFF;
+  --med-1:#FF9DB4; --rdv-1:#8CD0FF; --tache-1:#FFD27A; --pri-1:#7EEBD9; --ok-1:#7DEBB8; --card-shadow:0 2px 12px rgba(0,0,0,.35)}
+
+/* Ciel : la couleur suit le moment de la journée */
+.sky{position:relative;overflow:hidden;border-radius:30px;padding:16px 18px 22px;color:#fff;display:flex;flex-direction:column;gap:16px;box-shadow:0 12px 32px rgba(60,40,140,.22);isolation:isolate;transition:background .8s}
+.sky[data-p="night"]{background:linear-gradient(165deg,#191C4F 0%,#3B2A78 60%,#5B3A8F 100%)}
+.sky[data-p="dawn"]{background:linear-gradient(165deg,#5B4BB7 0%,#E5679A 55%,#FFB07A 100%)}
+.sky[data-p="day"]{background:linear-gradient(165deg,#1E88E5 0%,#35B6F0 55%,#7FD8F5 100%)}
+.sky[data-p="golden"]{background:linear-gradient(165deg,#F27D4A 0%,#FFA845 55%,#FFD36E 100%)}
+.sky[data-p="sunset"]{background:linear-gradient(165deg,#3E2C7A 0%,#C2457E 50%,#FF8A5B 100%)}
+.sky .orb{position:absolute;z-index:-1;width:150px;height:150px;border-radius:50%;inset-inline-end:-28px;bottom:-46px;transition:.8s}
+.sky[data-p="day"] .orb,.sky[data-p="golden"] .orb{background:radial-gradient(circle,#FFF6C8 0%,#FFE27A 38%,rgba(255,226,122,0) 70%)}
+.sky[data-p="dawn"] .orb,.sky[data-p="sunset"] .orb{background:radial-gradient(circle,#FFE3B0 0%,#FFB36B 35%,rgba(255,150,90,0) 70%);bottom:-80px}
+.sky[data-p="night"] .orb{width:40px;height:40px;inset-inline-end:28px;bottom:16px;background:transparent;box-shadow:11px -7px 0 0 #F4EFD8;opacity:.95}
+.sky .stars{position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .8s;background-image:radial-gradient(1.5px 1.5px at 12% 30%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 30% 70%,#fff 50%,transparent 51%),radial-gradient(1.5px 1.5px at 48% 22%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 62% 58%,#fff 50%,transparent 51%),radial-gradient(1.5px 1.5px at 78% 18%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 88% 42%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 22% 88%,#fff 50%,transparent 51%)}
+.sky[data-p="night"] .stars{opacity:.9} .sky[data-p="dawn"] .stars,.sky[data-p="sunset"] .stars{opacity:.35}
+.sky .brand{color:#fff}
+.sky .brand .logo{background:#fff;color:var(--accent);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.sky .langs{background:rgba(255,255,255,.18);backdrop-filter:blur(6px)}
+.sky .langs button{color:rgba(255,255,255,.85);padding:6px 10px}
+.sky .brand{font-size:22px}
+.sky .brand .logo{width:30px;height:30px}
+.sky .langs button[aria-pressed="true"]{background:#fff;color:#2A1F66}
+.sky .day{color:rgba(255,255,255,.88)}
+.sky .date{color:#fff}
+.sky .clock{color:#fff;font-size:44px;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.12)}
+.greet{font-family:"Fredoka",var(--f-display);font-weight:600;font-size:17px;color:rgba(255,255,255,.95);margin-top:-6px}
+:root[lang="ar"] .greet{font-family:var(--f-display)}
+
+/* Cartes */
+.item,.settings,.prayers,.examples{box-shadow:var(--card-shadow)}
+.next{position:relative;overflow:hidden;isolation:isolate;box-shadow:0 12px 28px rgba(60,40,140,.20)}
+.next::after{content:"";position:absolute;z-index:-1;width:170px;height:170px;border-radius:50%;inset-inline-end:-50px;top:-60px;background:rgba(255,255,255,.14)}
+.next::before{content:"";position:absolute;z-index:-1;width:90px;height:90px;border-radius:50%;inset-inline-end:40px;bottom:-50px;background:rgba(255,255,255,.10)}
+.next.med{background:linear-gradient(135deg,var(--med) 0%,var(--med-1) 100%)}
+.next.rdv{background:linear-gradient(135deg,var(--rdv) 0%,var(--rdv-1) 100%)}
+.next.tache{background:linear-gradient(135deg,var(--tache) 0%,var(--tache-1) 100%)}
+.next.pri{background:linear-gradient(135deg,var(--pri) 0%,var(--pri-1) 100%)}
+.next.allok{background:linear-gradient(135deg,var(--ok) 0%,var(--ok-1) 100%)}
+
+/* Bulles d'icônes en couleur pleine */
+.med .bubble{background:linear-gradient(145deg,var(--med),var(--med-1));color:var(--on-color)}
+.rdv .bubble{background:linear-gradient(145deg,var(--rdv),var(--rdv-1));color:var(--on-color)}
+.tache .bubble{background:linear-gradient(145deg,var(--tache),var(--tache-1));color:var(--on-color)}
+.pri .bubble{background:linear-gradient(145deg,var(--pri),var(--pri-1));color:var(--on-color)}
+.bubble{box-shadow:0 4px 10px rgba(60,40,140,.15)}
+.item.done{box-shadow:none}
+
+/* Filtres colorés */
+.chip[data-f="med"][aria-pressed="true"]{background:var(--med);border-color:var(--med);color:var(--on-color)}
+.chip[data-f="rdv"][aria-pressed="true"]{background:var(--rdv);border-color:var(--rdv);color:var(--on-color)}
+.chip[data-f="tache"][aria-pressed="true"]{background:var(--tache);border-color:var(--tache);color:var(--on-color)}
+.chip[data-f="pri"][aria-pressed="true"]{background:var(--pri);border-color:var(--pri);color:var(--on-color)}
+.chip[data-f="all"][aria-pressed="true"]{background:linear-gradient(135deg,var(--accent),var(--accent-1));border-color:transparent;color:var(--accent-ink)}
+
+/* Progression, prières, bouton principal */
+.bar i{background:linear-gradient(90deg,var(--ok),var(--pri-1))}
+.prc.nx{background:linear-gradient(145deg,var(--pri),var(--pri-1));box-shadow:0 4px 12px rgba(11,127,122,.3)}
+.stock{background:linear-gradient(135deg,var(--warn-soft),var(--med-soft))}
+.fab{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-1) 100%);box-shadow:0 12px 30px rgba(91,63,224,.45)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-1))}
+.unlock{border-color:var(--accent-1);background:linear-gradient(135deg,var(--surface),var(--surface-2))}
+.unlock .ico{background:linear-gradient(145deg,var(--accent),var(--accent-1))}
+.switch[aria-checked="true"]{background:linear-gradient(90deg,var(--ok),var(--pri-1))}
+.alert.med{background:linear-gradient(160deg,var(--med),var(--med-1))}
+.alert.rdv{background:linear-gradient(160deg,var(--rdv),var(--rdv-1))}
+.alert.tache{background:linear-gradient(160deg,var(--tache),var(--tache-1))}
+.alert.pri{background:linear-gradient(160deg,var(--pri),var(--pri-1))}
+@media (prefers-reduced-motion:reduce){.sky,.sky .orb,.sky .stars{transition:none}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -203,12 +331,15 @@ input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-we
   <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
   <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></symbol>
   <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 21h4"/></symbol>
+  <symbol id="i-pri" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3.5a8.5 8.5 0 1 0 6 13.2A7 7 0 0 1 14.5 3.5z"/><path d="M18.2 5.6l.6 1.3 1.4.2-1 1 .2 1.4-1.2-.7-1.2.7.2-1.4-1-1 1.4-.2z"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
 </svg>
 
 <main class="app">
+  <section class="sky" id="sky" data-p="day">
+  <div class="stars" aria-hidden="true"></div><div class="orb" aria-hidden="true"></div>
   <div class="brandbar">
-  <div class="brand"><span class="logo" aria-hidden="true"><svg width="20" height="20"><use href="#i-bell"/></svg></span><span id="brandname">Rappello</span></div>
+  <div class="brand"><span class="logo" aria-hidden="true"><svg width="20" height="20"><use href="#i-bell"/></svg></span><span id="brandname">RappelMe</span></div>
   <div class="langs" role="group" aria-label="Langue / Language / اللغة">
     <button data-lang="fr" aria-pressed="true">FR</button>
     <button data-lang="en" aria-pressed="false">EN</button>
@@ -220,6 +351,8 @@ input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-we
     <div><div class="day" id="day"></div><h1 class="date" id="date"></h1></div>
     <div class="clock" id="clock">--:--</div>
   </header>
+  <div class="greet" id="greet"></div>
+  </section>
 
   <button class="unlock" id="unlock" type="button">
     <div class="ico"><svg width="28" height="28"><use href="#i-sound"/></svg></div>
@@ -227,6 +360,7 @@ input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-we
   </button>
 
   <section class="next" id="next" aria-live="polite"></section>
+  <section class="prayers" id="prayers" hidden aria-live="polite"></section>
   <section class="stock" id="stock" hidden></section>
 
   <div class="progress"><div class="bar"><i id="barfill" style="width:0"></i></div><b id="prog"></b></div>
@@ -236,6 +370,7 @@ input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-we
     <button class="chip" data-f="med" aria-pressed="false" data-t="fMed"></button>
     <button class="chip" data-f="rdv" aria-pressed="false" data-t="fRdv"></button>
     <button class="chip" data-f="tache" aria-pressed="false" data-t="fTache"></button>
+    <button class="chip" data-f="pri" aria-pressed="false" data-t="fPri"></button>
   </div>
 
   <div class="examples" id="examples" hidden>
@@ -250,7 +385,35 @@ input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-we
     <div class="row"><span data-t="sound"></span><button class="switch" id="sw-sound" role="switch" aria-checked="true"></button></div>
     <div class="row"><span data-t="voice"></span><button class="switch" id="sw-voice" role="switch" aria-checked="true"></button></div>
     <p class="hint" data-t="voiceHint"></p>
+    <div class="subt" data-t="soundsTitle"></div>
+    <div class="sndrows" id="sndRows"></div>
+    <div class="subt" data-t="styleTitle"></div>
+    <div class="seg seg3" id="styleSeg" role="group"></div>
+    <p class="hint" id="styleEx"></p>
     <button class="btn" id="test" type="button" data-t="test"></button>
+  </section>
+
+  <section class="settings" id="prSettings">
+    <h3 style="color:var(--pri);display:flex;align-items:center;gap:8px"><svg width="22" height="22"><use href="#i-pri"/></svg><span data-t="priTitle"></span></h3>
+    <div class="row"><span data-t="priOn"></span><button class="switch" id="sw-pri" role="switch" aria-checked="true"></button></div>
+    <div id="prOpts" class="prgrid2" style="display:grid">
+      <label class="fl" for="pr-country"><span data-t="country"></span><select id="pr-country"></select></label>
+      <label class="fl" for="pr-city"><span data-t="city"></span><select id="pr-city"></select></label>
+      <label class="fl" for="pr-method"><span data-t="method"></span><select id="pr-method"></select></label>
+      <label class="fl" for="pr-asr"><span data-t="asr"></span><select id="pr-asr"></select></label>
+      <label class="fl" for="pr-adv"><span data-t="warn"></span><select id="pr-adv"></select></label>
+      <label class="fl" for="pr-off"><span data-t="adjust"></span><select id="pr-off"></select></label>
+    </div>
+    <div class="subt" data-t="callTitle"></div>
+    <div class="seg" id="callSeg" role="group"></div>
+    <div class="phlist" id="callPhrases" hidden></div>
+    <div id="prAdhan" class="box pri">
+      <h3><svg width="22" height="22"><use href="#i-sound"/></svg><span data-t="adhanTitle"></span></h3>
+      <p class="hint" data-t="adhanHelp"></p>
+      <div class="vstate" id="adhanState"></div>
+      <p class="err" id="adhanErr" hidden></p>
+    </div>
+    <p class="hint" id="prHint" data-t="priHint"></p>
   </section>
 </main>
 
@@ -331,7 +494,7 @@ input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-we
 <script>
 /* ================= Textes FR / EN / AR ================= */
 const T = {
-fr:{appName:"Rappello",unlockTitle:"Activer les sons et la voix",unlockText:"Touchez ici une fois pour que les rappels puissent sonner et parler.",
+fr:{appName:"RappelMe",unlockTitle:"Activer les sons et la voix",unlockText:"Touchez ici une fois pour que les rappels puissent sonner et parler.",
 next:"Prochain rappel",inMin:"dans {n} min",inH:"dans {h} h {m}",now:"maintenant",today:"Aujourd'hui",allDone:"Tout est fait, bravo !",nothingLeft:"Plus rien de prévu",lateLeft:"{n} rappel(s) en retard à cocher plus bas",enjoy:"Profitez de votre journée",
 progress:"{d} sur {n} faits",all:"Tout",fMed:"Médicaments",fRdv:"Rendez-vous",fTache:"Tâches",med:"Médicament",rdv:"Rendez-vous",tache:"Tâche",
 examplesNote:"Ce sont des exemples. Touchez un rappel pour le modifier.",clearEx:"Effacer les exemples",late:"En retard",nextTag:"Prochain",daily:"Tous les jours",before:"prévenir {x} avant",snoozed:"reporté de 10 min",
@@ -345,7 +508,7 @@ voiceTitle:"La voix d'un proche",voiceHelp:"Un proche enregistre un message avec
 done:"C'est fait",snooze:"Me rappeler dans 10 min",close:"Fermer",rdvIn:"Rendez-vous dans {x}",pillsLeft:"Il reste {n} comprimés",msgFrom:"Message de {n}",
 sayMed:"C'est l'heure de votre médicament : {t}.",sayRdvSoon:"Rappel : {t}, à {h}.",sayRdv:"C'est l'heure de votre rendez-vous : {t}.",sayTask:"N'oubliez pas : {t}.",sayLeave:"C'est l'heure de partir pour {t}.",sayBring:"Pensez à emporter : {l}.",sayLow:"Attention, il ne reste que {n} comprimés de {t}.",sayUnlock:"Les rappels sonores sont activés.",
 empty:"Aucun rappel ici pour aujourd'hui. Touchez « Ajouter un rappel » en bas de l'écran.",sample:"Exemple de médicament"},
-en:{appName:"Rappello",unlockTitle:"Turn on sound and voice",unlockText:"Tap here once so reminders can ring and speak.",
+en:{appName:"RappelMe",unlockTitle:"Turn on sound and voice",unlockText:"Tap here once so reminders can ring and speak.",
 next:"Next reminder",inMin:"in {n} min",inH:"in {h} h {m}",now:"now",today:"Today",allDone:"All done, well done!",nothingLeft:"Nothing else planned",lateLeft:"{n} late reminder(s) to tick below",enjoy:"Enjoy your day",
 progress:"{d} of {n} done",all:"All",fMed:"Medicines",fRdv:"Appointments",fTache:"Tasks",med:"Medicine",rdv:"Appointment",tache:"Task",
 examplesNote:"These are examples. Tap a reminder to edit it.",clearEx:"Clear examples",late:"Late",nextTag:"Next",daily:"Every day",before:"alert {x} before",snoozed:"snoozed 10 min",
@@ -359,7 +522,7 @@ voiceTitle:"A loved one's voice",voiceHelp:"A loved one records a message on the
 done:"Done",snooze:"Remind me in 10 min",close:"Close",rdvIn:"Appointment in {x}",pillsLeft:"{n} pills left",msgFrom:"Message from {n}",
 sayMed:"Time for your medicine: {t}.",sayRdvSoon:"Reminder: {t}, at {h}.",sayRdv:"Time for your appointment: {t}.",sayTask:"Don't forget: {t}.",sayLeave:"Time to leave for {t}.",sayBring:"Remember to bring: {l}.",sayLow:"Careful, only {n} pills of {t} left.",sayUnlock:"Sound reminders are on.",
 empty:"No reminders here today. Tap “Add a reminder” at the bottom of the screen.",sample:"Sample medicine"},
-ar:{appName:"رابيلو",unlockTitle:"تفعيل الصوت والكلام",unlockText:"اضغط هنا مرة واحدة ليتمكن التطبيق من الرنين والكلام.",
+ar:{appName:"رابل مي",unlockTitle:"تفعيل الصوت والكلام",unlockText:"اضغط هنا مرة واحدة ليتمكن التطبيق من الرنين والكلام.",
 next:"التذكير القادم",inMin:"بعد {n} دقيقة",inH:"بعد {h} س {m} د",now:"الآن",today:"اليوم",allDone:"أنجزت كل شيء، أحسنت!",nothingLeft:"لا شيء آخر مخطط له",lateLeft:"{n} تذكير متأخر في الأسفل",enjoy:"يوما سعيدا",
 progress:"{d} من {n} تم",all:"الكل",fMed:"الأدوية",fRdv:"المواعيد",fTache:"المهام",med:"دواء",rdv:"موعد",tache:"مهمة",
 examplesNote:"هذه أمثلة. اضغط على أي تذكير لتعديله.",clearEx:"حذف الأمثلة",late:"متأخر",nextTag:"التالي",daily:"كل يوم",before:"تنبيه قبل {x}",snoozed:"مؤجل 10 دقائق",
@@ -383,10 +546,172 @@ const SUG = ["vitale","ordo","mutuelle","analyses","ident","glasses"];
 const LOC = {fr:"fr-FR", en:"en-GB", ar:"ar-u-nu-latn"};
 const SPEECH = {fr:"fr", en:"en", ar:"ar"};
 
+/* ================= Heures de prière ================= */
+const PR_KEYS = ['fajr','dhuhr','asr','maghrib','isha'];
+const METHODS = {
+  mwl:{f:18,i:17}, uoif:{f:12,i:12}, isna:{f:15,i:15}, egypt:{f:19.5,i:17.5}, makkah:{f:18.5,im:90},
+  maroc:{f:19,i:17}, algerie:{f:18,i:17}, tunisie:{f:18,i:18}, diyanet:{f:18,i:17}
+};
+const COUNTRIES = {
+  FR:{m:'uoif',a:1,c:[['Paris',48.8566,2.3522],['Marseille',43.2965,5.3698],['Lyon',45.764,4.8357],['Toulouse',43.6047,1.4442],['Lille',50.6292,3.0573],['Nice',43.7102,7.262],['Strasbourg',48.5734,7.7521],['Bordeaux',44.8378,-0.5792],['Nantes',47.2184,-1.5536],['Montpellier',43.6108,3.8767]]},
+  BE:{m:'mwl',a:1,c:[['Bruxelles',50.8503,4.3517],['Anvers',51.2194,4.4025],['Liège',50.6326,5.5797]]},
+  CH:{m:'mwl',a:1,c:[['Genève',46.2044,6.1432],['Zurich',47.3769,8.5417],['Lausanne',46.5197,6.6323]]},
+  DE:{m:'mwl',a:1,c:[['Berlin',52.52,13.405],['Frankfurt',50.1109,8.6821],['Köln',50.9375,6.9603]]},
+  GB:{m:'mwl',a:1,c:[['London',51.5074,-0.1278],['Birmingham',52.4862,-1.8904],['Manchester',53.4808,-2.2426]]},
+  CA:{m:'isna',a:1,c:[['Montréal',45.5017,-73.5673],['Toronto',43.6532,-79.3832],['Ottawa',45.4215,-75.6972]]},
+  US:{m:'isna',a:1,c:[['New York',40.7128,-74.006],['Chicago',41.8781,-87.6298],['Los Angeles',34.0522,-118.2437]]},
+  MA:{m:'maroc',a:1,c:[['Casablanca',33.5731,-7.5898],['Rabat',34.0209,-6.8416],['Marrakech',31.6295,-7.9811],['Fès',34.0181,-5.0078],['Tanger',35.7595,-5.834],['Agadir',30.4278,-9.5981],['Oujda',34.6814,-1.9086]]},
+  DZ:{m:'algerie',a:1,c:[['Alger',36.7538,3.0588],['Oran',35.6971,-0.6308],['Constantine',36.365,6.6147],['Annaba',36.9,7.7667],['Tlemcen',34.8783,-1.315],['Sétif',36.19,5.41]]},
+  TN:{m:'tunisie',a:1,c:[['Tunis',36.8065,10.1815],['Sfax',34.7406,10.7603],['Sousse',35.8256,10.6084]]},
+  SN:{m:'mwl',a:1,c:[['Dakar',14.7167,-17.4677],['Touba',14.85,-15.8833]]},
+  EG:{m:'egypt',a:1,c:[['Le Caire',30.0444,31.2357],['Alexandrie',31.2001,29.9187]]},
+  SA:{m:'makkah',a:1,c:[['La Mecque',21.3891,39.8579],['Médine',24.5247,39.5692],['Riyad',24.7136,46.6753],['Djeddah',21.4858,39.1925]]},
+  TR:{m:'diyanet',a:2,c:[['İstanbul',41.0082,28.9784],['Ankara',39.9334,32.8597]]}
+};
+const TZ_COUNTRY = {'Europe/Paris':'FR','Europe/Brussels':'BE','Europe/Zurich':'CH','Europe/Berlin':'DE','Europe/London':'GB','America/Toronto':'CA','America/Montreal':'CA','America/New_York':'US','America/Chicago':'US','America/Los_Angeles':'US','Africa/Casablanca':'MA','Africa/Algiers':'DZ','Africa/Tunis':'TN','Africa/Dakar':'SN','Africa/Cairo':'EG','Asia/Riyadh':'SA','Europe/Istanbul':'TR'};
+
+const dtr = d => d*Math.PI/180, rtd = r => r*180/Math.PI;
+const sinD = d => Math.sin(dtr(d)), cosD = d => Math.cos(dtr(d)), tanD = d => Math.tan(dtr(d));
+const asinD = x => rtd(Math.asin(x)), acosD = x => rtd(Math.acos(x)), atan2D = (y,x) => rtd(Math.atan2(y,x)), acotD = x => rtd(Math.atan(1/x));
+const fixA = a => a - 360*Math.floor(a/360), fixH = h => h - 24*Math.floor(h/24);
+function julian(y, m, d){ if (m <= 2){ y -= 1; m += 12; } const A = Math.floor(y/100), B = 2 - A + Math.floor(A/4); return Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + B - 1524.5; }
+function sunPos(jd){
+  const D = jd - 2451545, g = fixA(357.529 + 0.98560028*D), q = fixA(280.459 + 0.98564736*D);
+  const L = fixA(q + 1.915*sinD(g) + 0.020*sinD(2*g)), e = 23.439 - 0.00000036*D;
+  const RA = atan2D(cosD(e)*sinD(L), cosD(L)) / 15;
+  return {decl: asinD(sinD(e)*sinD(L)), eqt: q/15 - fixH(RA)};
+}
+/* Renvoie les horaires en minutes depuis minuit, à l'heure du téléphone */
+function prayerTimes(date, lat, lng, mk, asrF){
+  const m = METHODS[mk] || METHODS.mwl;
+  const jd = julian(date.getFullYear(), date.getMonth()+1, date.getDate()) - lng/(15*24);
+  const tz = -new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12).getTimezoneOffset()/60;
+  const midDay = t => fixH(12 - sunPos(jd+t).eqt);
+  const angTime = (a, t, ccw) => { const s = sunPos(jd+t), n = midDay(t); const v = (-sinD(a) - sinD(s.decl)*sinD(lat)) / (cosD(s.decl)*cosD(lat)); if (v < -1 || v > 1) return NaN; const d = acosD(v)/15; return n + (ccw ? -d : d); };
+  const asrT = (f, t) => { const s = sunPos(jd+t); return angTime(-acotD(f + tanD(Math.abs(lat - s.decl))), t); };
+  const init = {fajr:5, sunrise:6, dhuhr:12, asr:13, sunset:18, isha:18};
+  let T = {...init};
+  for (let k = 0; k < 2; k++){
+    const p = {}; for (const x in T) p[x] = (isNaN(T[x]) ? init[x] : T[x]) / 24;
+    T = {fajr:angTime(m.f, p.fajr, true), sunrise:angTime(0.833, p.sunrise, true), dhuhr:midDay(p.dhuhr), asr:asrT(asrF, p.asr), sunset:angTime(0.833, p.sunset), isha:m.im ? NaN : angTime(m.i, p.isha)};
+  }
+  const adj = tz - lng/15; for (const x in T) T[x] += adj;
+  const night = 24 - T.sunset + T.sunrise;              // règle des latitudes élevées (angle)
+  const fp = m.f/60*night; if (isNaN(T.fajr) || T.sunrise - T.fajr > fp) T.fajr = T.sunrise - fp;
+  if (m.im) T.isha = T.sunset + m.im/60;
+  else { const ip = m.i/60*night; if (isNaN(T.isha) || T.isha - T.sunset > ip) T.isha = T.sunset + ip; }
+  T.maghrib = T.sunset;
+  const out = {}; for (const x of ['fajr','sunrise','dhuhr','asr','maghrib','isha']) out[x] = Math.round(T[x]*60);
+  return out;
+}
+function prCfg(){
+  const p = state.pri, c = COUNTRIES[p.country] || COUNTRIES.FR, city = c.c[p.city] || c.c[0];
+  return {c, city, mk: p.method==='auto' ? c.m : p.method, af: p.asr==='auto' ? c.a : Number(p.asr)};
+}
+function prayersFor(d){
+  if (!state.pri || !state.pri.on) return [];
+  const {city, mk, af} = prCfg(), tm = prayerTimes(d, city[1], city[2], mk, af);
+  const off = Number(state.pri.off)||0, dk = dkey(d), done = (state.priDone||{})[dk] || [];
+  const isTodayD = dk === todayKey();
+  return PR_KEYS.map(k => ({id:'pri-'+k, type:'pri', key:k, time:fromMin(tm[k]+off), repeat:'daily', adv:Number(state.pri.adv)||0, date:dk, virt:true,
+    doneOn: done.includes(k) ? dk : undefined, snooze: isTodayD ? (state.priSnooze||{})['pri-'+k] : undefined}));
+}
+const allToday = () => state.items.filter(isToday).concat(prayersFor(new Date()));
+const getItem = id => state.items.find(i => i.id===id) || prayersFor(new Date()).find(i => i.id===id);
+function setSnooze(it, v){
+  if (it.virt){ state.priSnooze = state.priSnooze || {}; if (v) state.priSnooze[it.id] = v; else delete state.priSnooze[it.id]; it.snooze = v || undefined; }
+  else { if (v) it.snooze = v; else delete it.snooze; }
+}
+
+/* ================= Sons et styles de phrases ================= */
+const SOUNDS = ['cloche','carillon','harpe','bol','gouttes','oiseaux','dingdong'];
+const SND_DEFAULT = {med:'harpe', rdv:'dingdong', tache:'gouttes', pri:'cloche'};
+function tone(f, at, dur, vol, type, partials){
+  const out = actx.createGain(); out.connect(actx.destination);
+  (partials || [[1,1]]).forEach(([mult, amp]) => {
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = type || 'sine'; o.frequency.value = f*mult;
+    g.gain.setValueAtTime(0.0001, at);
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0002, vol*amp), at + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, at + dur*(mult > 1 ? 0.6 : 1));
+    o.connect(g).connect(out); o.start(at); o.stop(at + dur + 0.05);
+  });
+}
+const BELL = [[1,1],[2.76,0.35],[5.4,0.15]];
+const SYNTH = {
+  cloche(t){ [880,659,880].forEach((f,i) => tone(f, t+i*0.9, 2.6, 0.32, 'sine', BELL)); return 4.4; },
+  carillon(t){ [784,988,1175,1568,1175,1568].forEach((f,i) => tone(f, t+i*0.22, 1.3, 0.25, 'sine', BELL)); return 2.6; },
+  harpe(t){ [523,659,784,1047,1319,1047,1319].forEach((f,i) => tone(f, t+i*0.13, 1.1, 0.3, 'triangle', [[1,1],[2,0.25]])); return 2.0; },
+  bol(t){
+    [[220,0],[221.6,0],[220,2.2],[221.6,2.2]].forEach(([f,d]) => {
+      const o = actx.createOscillator(), g = actx.createGain(), o2 = actx.createOscillator(), g2 = actx.createGain();
+      o.frequency.value = f; o2.frequency.value = f*2.71;
+      g.gain.setValueAtTime(0.0001, t+d); g.gain.exponentialRampToValueAtTime(0.22, t+d+0.25); g.gain.exponentialRampToValueAtTime(0.0001, t+d+4);
+      g2.gain.setValueAtTime(0.0001, t+d); g2.gain.exponentialRampToValueAtTime(0.06, t+d+0.2); g2.gain.exponentialRampToValueAtTime(0.0001, t+d+2.5);
+      o.connect(g).connect(actx.destination); o2.connect(g2).connect(actx.destination);
+      o.start(t+d); o.stop(t+d+4.1); o2.start(t+d); o2.stop(t+d+2.6);
+    }); return 5.5;
+  },
+  gouttes(t){
+    [0,0.28,0.45,0.8,1.0,1.35,1.5].forEach((d,i) => {
+      const o = actx.createOscillator(), g = actx.createGain(), f = 900 + (i*137 % 500);
+      o.frequency.setValueAtTime(f*1.6, t+d); o.frequency.exponentialRampToValueAtTime(f, t+d+0.07);
+      g.gain.setValueAtTime(0.0001, t+d); g.gain.exponentialRampToValueAtTime(0.35, t+d+0.005); g.gain.exponentialRampToValueAtTime(0.0001, t+d+0.18);
+      o.connect(g).connect(actx.destination); o.start(t+d); o.stop(t+d+0.2);
+    }); return 1.8;
+  },
+  oiseaux(t){
+    const chirp = (d, f1, f2, len) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.frequency.setValueAtTime(f1, t+d); o.frequency.exponentialRampToValueAtTime(f2, t+d+len);
+      g.gain.setValueAtTime(0.0001, t+d); g.gain.exponentialRampToValueAtTime(0.18, t+d+0.01); g.gain.exponentialRampToValueAtTime(0.0001, t+d+len);
+      o.connect(g).connect(actx.destination); o.start(t+d); o.stop(t+d+len+0.02);
+    };
+    [[0,2600,3900,.09],[.12,2800,4200,.08],[.24,3000,4400,.07],[.7,3600,2400,.14],[.9,2500,3800,.09],[1.02,2700,4100,.08],[1.5,3200,4600,.06],[1.58,3300,4700,.06],[1.66,3400,4800,.06]].forEach(c => chirp(...c));
+    return 1.9;
+  },
+  dingdong(t){ tone(784, t, 1.4, 0.35, 'sine', BELL); tone(622, t+0.55, 1.8, 0.35, 'sine', BELL); tone(784, t+1.9, 1.4, 0.3, 'sine', BELL); tone(622, t+2.45, 1.8, 0.3, 'sine', BELL); return 4.3; }
+};
+const sndFor = type => (state.settings.snd && state.settings.snd[type]) || SND_DEFAULT[type] || 'carillon';
+function playSound(name){
+  if (!actx) return 0;
+  try { return (SYNTH[name] || SYNTH.carillon)(actx.currentTime + 0.05) * 1000; } catch(e){ return 0; }
+}
+
+/* Phrases par style. Le style « classique » utilise les phrases d'origine. */
+const PHR = {
+  fr:{
+    chaleureux:{med:"Prenez soin de vous : c'est l'heure de {t}.", rdvSoon:"Votre rendez-vous approche : {t}. Tout est prêt ?", rdv:"C'est l'heure de votre rendez-vous : {t}. Bon courage !", tache:"Petit rappel tout doux : {t}.", leave:"C'est l'heure de partir pour {t}. Bonne route !", pri:"C'est l'heure de la prière : {p}. Prenez ce moment pour vous."},
+    spirituel:{med:"C'est l'heure de votre médicament : {t}.", rdvSoon:"Votre rendez-vous approche : {t}. Tout est prêt ?", rdv:"C'est l'heure de votre rendez-vous : {t}.", tache:"Petit rappel : {t}.", leave:"C'est l'heure de partir pour {t}. Bonne route !",
+      fajr:"C'est l'heure du Fajr. La prière vaut mieux que le sommeil.", dhuhr:"Allahou akbar, c'est l'heure du Dhohr.", asr:"Prenez un moment pour Allah : l'Asr est arrivé.", maghrib:"Le soleil s'est couché, c'est l'heure du Maghrib.", isha:"Hayya ala salat, venez à la prière : c'est l'heure de l'Icha."}
+  },
+  en:{
+    chaleureux:{med:"Take care of yourself: time for {t}.", rdvSoon:"Your appointment is coming up: {t}. All set?", rdv:"Time for your appointment: {t}. Good luck!", tache:"A gentle reminder: {t}.", leave:"Time to leave for {t}. Safe trip!", pri:"Time for prayer: {p}. Take this moment for yourself."},
+    spirituel:{med:"Time for your medicine: {t}.", rdvSoon:"Your appointment is coming up: {t}. All set?", rdv:"Time for your appointment: {t}.", tache:"A little reminder: {t}.", leave:"Time to leave for {t}. Safe trip!",
+      fajr:"It is time for Fajr. Prayer is better than sleep.", dhuhr:"Allahu akbar, it is time for Dhuhr.", asr:"Take a moment for Allah: Asr has come.", maghrib:"The sun has set, it is time for Maghrib.", isha:"Hayya ala salat, come to prayer: it is time for Isha."}
+  },
+  ar:{
+    chaleureux:{med:"صحتك أولاً، حان وقت دوائك: {t}.", rdvSoon:"موعدك يقترب: {t}. هل كل شيء جاهز؟", rdv:"حان وقت موعدك: {t}. بالتوفيق!", tache:"تذكير لطيف: {t}.", leave:"حان وقت الخروج إلى {t}. طريق السلامة!", pri:"حان وقت صلاة {p}. خذ هذه اللحظة لنفسك."},
+    spirituel:{med:"حان وقت دوائك: {t}.", rdvSoon:"موعدك يقترب: {t}. هل كل شيء جاهز؟", rdv:"حان وقت موعدك: {t}.", tache:"تذكير: {t}.", leave:"حان وقت الخروج إلى {t}. طريق السلامة!",
+      fajr:"حان وقت صلاة الفجر. الصلاة خير من النوم.", dhuhr:"الله أكبر، حان وقت صلاة الظهر.", asr:"خذ لحظة لله، حان وقت صلاة العصر.", maghrib:"غربت الشمس، حان وقت صلاة المغرب.", isha:"حيّ على الصلاة، حان وقت صلاة العشاء."}
+  }
+};
+function fill(s, v){ for (const k in v) s = s.split('{'+k+'}').join(v[k]); return s; }
+/* Renvoie la phrase du style choisi, ou null pour garder la phrase classique */
+function stylePhrase(a){
+  const st = state.settings.style || 'classique'; if (st === 'classique') return null;
+  const P = (PHR[L()] || PHR.fr)[st], it = a.it, tt = title(it);
+  if (a.kind === 'leave') return fill(P.leave, {t:tt});
+  if (it.type === 'pri'){ if (it.adv > 0) return null; return fill(P[it.key] || P.pri, {p:tt}); }
+  if (it.type === 'rdv') return fill(it.adv > 0 ? P.rdvSoon : P.rdv, {t:tt});
+  return P[it.type] ? fill(P[it.type], {t:tt}) : null;
+}
+
 const KEY = 'ma-journee-v2';
 const $ = s => document.querySelector(s);
 const pad = n => String(n).padStart(2,'0');
-const todayKey = () => { const d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
+const dkey = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const todayKey = () => dkey(new Date());
 const toMin = t => { const [h,m]=t.split(':').map(Number); return h*60+m; };
 const fromMin = m => { m=((m%1440)+1440)%1440; return pad(Math.floor(m/60))+':'+pad(m%60); };
 const nowMin = () => { const d=new Date(); return d.getHours()*60+d.getMinutes()+d.getSeconds()/60; };
@@ -417,10 +742,15 @@ function seed(){
 function load(){
   try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.items)) state = s; else seed(); } catch(e){ seed(); }
   state.fired = state.fired || {}; state.stocks = state.stocks || {}; state.settings = state.settings || {sound:true,voice:true};
+  if (!state.pri){ let cc = 'FR'; try { cc = TZ_COUNTRY[Intl.DateTimeFormat().resolvedOptions().timeZone] || 'FR'; } catch(e){}
+    state.pri = {on:true, country:cc, city:0, method:'auto', asr:'auto', adv:0, off:0, hasAdhan:false}; }
+  state.priDone = state.priDone || {}; state.priSnooze = state.priSnooze || {};
+  if (!state.pri.call) state.pri.call = 'adhan';
+  state.settings.snd = state.settings.snd || {...SND_DEFAULT}; state.settings.style = state.settings.style || 'classique';
 }
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
 
-const title = it => it.ex ? EX[L()][it.ex][0] : it.title;
+const title = it => it.type==='pri' ? t('p_'+it.key) : it.ex ? EX[L()][it.ex][0] : it.title;
 const note = it => it.ex ? EX[L()][it.ex][1] : (it.note||'');
 const place = it => it.ex==='kine' ? EX[L()].kinePlace : (it.place||'');
 const questions = it => it.ex==='kine' ? EX[L()].kineQs : (it.questions||'');
@@ -451,6 +781,14 @@ function takeDose(it, on){
   else if (it.taken){ s.qty = +(s.qty + it.taken).toFixed(2); it.taken = 0; }
 }
 function setDone(it, on){
+  if (it.virt){
+    const dk = todayKey(); state.priDone = state.priDone || {};
+    for (const k in state.priDone) if (k !== dk) delete state.priDone[k];
+    const a = state.priDone[dk] = state.priDone[dk] || [], i = a.indexOf(it.key);
+    if (on && i < 0){ a.push(it.key); setSnooze(it, 0); }
+    if (!on && i >= 0) a.splice(i, 1);
+    it.doneOn = on ? dk : undefined; return;
+  }
   if (on && !isDone(it)){ it.doneOn = todayKey(); delete it.snooze; takeDose(it, true); }
   else if (!on && isDone(it)){ delete it.doneOn; takeDose(it, false); }
 }
@@ -471,18 +809,7 @@ function unlockAudio(){
 }
 function chime(type){
   if (!state.settings.sound || !actx) return 0;
-  const notes = {med:[784,988,1175,1568], rdv:[659,880,1047,880,1047], tache:[523,659,784,1047]}[type] || [660,880];
-  const start = actx.currentTime + 0.05; let tt = start;
-  for (let rep=0; rep<2; rep++){
-    notes.forEach(f => {
-      const o = actx.createOscillator(), g = actx.createGain();
-      o.type = 'sine'; o.frequency.value = f;
-      g.gain.setValueAtTime(0.0001, tt); g.gain.exponentialRampToValueAtTime(0.4, tt+0.02); g.gain.exponentialRampToValueAtTime(0.0001, tt+0.55);
-      o.connect(g).connect(actx.destination); o.start(tt); o.stop(tt+0.6); tt += 0.2;
-    });
-    tt += 0.35;
-  }
-  return (tt - start) * 1000;
+  return playSound(sndFor(type));
 }
 function beep(){ if (!actx || !state.settings.sound) return; const o=actx.createOscillator(), g=actx.createGain(); o.frequency.value=1047; g.gain.setValueAtTime(.25,actx.currentTime); g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+.3); o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime+.3); }
 function speak(text){
@@ -509,8 +836,10 @@ function heureParlee(s){
   return h + (h<2?' heure':' heures') + (m ? ' ' + m : '');
 }
 function phrase(a){
-  const it = a.it, tt = title(it); let s;
-  if (a.kind==='leave') s = t('sayLeave',{t:tt});
+  const it = a.it, tt = title(it); let s = (a.kind!=='leave' && usesPhrase(it)) ? CALLS[callKey(it)].ar + ' · ' + tt + '.' : stylePhrase(a);
+  if (s) {}
+  else if (a.kind==='leave') s = t('sayLeave',{t:tt});
+  else if (it.type==='pri') s = it.adv>0 ? t('sayPriSoon',{p:tt,x:t('x'+it.adv)}) : t('sayPri',{p:tt});
   else if (it.type==='med') s = t('sayMed',{t:tt});
   else if (it.type==='rdv') s = it.adv>0 ? t('sayRdvSoon',{t:tt,h:heureParlee(it.time)}) : t('sayRdv',{t:tt});
   else s = t('sayTask',{t:tt});
@@ -531,6 +860,8 @@ async function announce(){
     if (current !== a) return;
     let played = false;
     if (a.it.hasVoice && a.kind!=='leave') played = await playClip(a.it.id);
+    if (!played && usesPhrase(a.it)){ speakCall(a.it); played = true; }
+    if (!played && a.it.type==='pri' && !a.it.adv && state.pri.hasAdhan) played = await playClip('adhan');
     if (!played) speak(phrase(a));
   }, Math.min(ms, 3500));
 }
@@ -542,7 +873,7 @@ function nextAlert(){
   const it = current.it, kind = current.kind;
   el.className = 'alert ' + it.type;
   $('#a-ico').innerHTML = `<use href="#i-${kind==='leave'?'walk':it.type}"/>`;
-  $('#a-kind').textContent = kind==='leave' ? t('leaveNow') : (it.type==='rdv' && it.adv>0 ? t('rdvIn',{x:t('x'+it.adv)}) : t(it.type));
+  $('#a-kind').textContent = kind==='leave' ? t('leaveNow') : (it.adv>0 && it.type==='rdv' ? t('rdvIn',{x:t('x'+it.adv)}) : it.adv>0 && it.type==='pri' ? t('priIn',{x:t('x'+it.adv)}) : t(it.type));
   $('#a-title').textContent = title(it);
   $('#a-when').textContent = fmtTime(it.time);
   const from = $('#a-from');
@@ -552,6 +883,7 @@ function nextAlert(){
   if (it.type==='med'){ const si = stockInfo(it.stockKey); if (si) nt = (nt?nt+' · ':'') + t('pillsLeft',{n:si.qty}); }
   if (it.type==='rdv' && place(it)) nt = place(it) + (nt?' · '+nt:'');
   $('#a-note').textContent = nt;
+  if (kind!=='leave' && usesPhrase(it)) $('#a-note').innerHTML = `<div class="callar" lang="ar" dir="rtl">${CALLS[callKey(it)].ar}</div>`;
   const ab = $('#a-bring');
   ab.innerHTML = it.type==='rdv' ? (it.bring||[]).map((b,i)=>`<label><input type="checkbox" data-ab="${i}" ${b.ok?'checked':''}>${esc(bringLabel(b))}</label>`).join('') : '';
   el.hidden = false;
@@ -562,22 +894,22 @@ function nextAlert(){
 }
 $('#a-bring').addEventListener('change', e => {
   const i = e.target.dataset.ab; if (i==null || !current || current.test) return;
-  const it = state.items.find(x=>x.id===current.it.id); if (it && it.bring[i]){ it.bring[i].ok = e.target.checked; save(); render(); }
+  const it = getItem(current.it.id); if (it && it.bring && it.bring[i]){ it.bring[i].ok = e.target.checked; save(); render(); }
 });
 $('#a-done').onclick = () => {
-  if (current && !current.test){ const it = state.items.find(i=>i.id===current.it.id); if (it && current.kind!=='leave'){ setDone(it,true); save(); } }
+  if (current && !current.test){ const it = getItem(current.it.id); if (it && current.kind!=='leave'){ setDone(it,true); save(); } }
   nextAlert(); render();
 };
 $('#a-snooze').onclick = () => {
-  if (current && !current.test){ const it = state.items.find(i=>i.id===current.it.id); if (it){ it.snooze = Date.now()+10*60000; save(); } }
+  if (current && !current.test){ const it = getItem(current.it.id); if (it){ setSnooze(it, Date.now()+10*60000); save(); } }
   nextAlert(); render();
 };
 $('#a-close').onclick = () => nextAlert();
 
 function due(){
   const nm = nowMin(), out = [];
-  for (const it of state.items){
-    if (!isToday(it) || isDone(it)) continue;
+  for (const it of allToday()){
+    if (isDone(it)) continue;
     const lm = leaveMin(it);
     if (lm!=null && lm !== alertMin(it) && lm <= nm) out.push([it,'leave']);
     if (alertMin(it) <= nm) out.push([it,'main']);
@@ -587,7 +919,7 @@ function due(){
 function tick(){
   const tk = '@'+todayKey()+'@';
   for (const k in state.fired) if (!k.includes(tk)) delete state.fired[k];
-  for (const it of state.items){ if (it.snooze && Date.now() >= it.snooze){ delete it.snooze; save(); if (!isDone(it)) fire(it,'main'); } }
+  for (const it of allToday()){ if (it.snooze && Date.now() >= it.snooze){ setSnooze(it, 0); save(); if (!isDone(it)) fire(it,'main'); } }
   for (const [it,kind] of due()){ const k = fkey(it,kind); if (!state.fired[k]){ state.fired[k] = true; save(); fire(it,kind); } }
   renderClock(); renderNext();
 }
@@ -610,8 +942,24 @@ function renderClock(){
   $('#clock').textContent = pad(d.getHours())+':'+pad(d.getMinutes());
   $('#day').textContent = d.toLocaleDateString(loc,{weekday:'long'});
   $('#date').textContent = d.toLocaleDateString(loc,{day:'numeric',month:'long'});
+  renderSky(d);
 }
-const todays = () => state.items.filter(isToday).sort((a,b)=>toMin(a.time)-toMin(b.time));
+function skyPeriod(d){
+  let tm; try { const c = prCfg(); tm = prayerTimes(d, c.city[1], c.city[2], c.mk, c.af); } catch(e){}
+  if (!tm || isNaN(tm.sunrise)) tm = {fajr:330, sunrise:420, asr:930, maghrib:1110, isha:1200};
+  const m = d.getHours()*60 + d.getMinutes();
+  if (m < tm.fajr || m >= tm.isha) return 'night';
+  if (m < tm.sunrise + 45) return 'dawn';
+  if (m < tm.asr) return 'day';
+  if (m < tm.maghrib - 40) return 'golden';
+  return 'sunset';
+}
+function renderSky(d){
+  const p = skyPeriod(d), h = d.getHours();
+  $('#sky').dataset.p = p;
+  $('#greet').textContent = h >= 5 && h < 12 ? t('gMorning') : h >= 12 && h < 18 ? t('gAfternoon') : t('gEvening');
+}
+const todays = () => allToday().sort((a,b)=>toMin(a.time)-toMin(b.time));
 const nextItem = () => { const nm = Math.floor(nowMin()); return todays().find(it => !isDone(it) && toMin(it.time) >= nm); };
 function dans(min){ min = Math.max(0, Math.round(min)); if (min<1) return t('now'); if (min<60) return t('inMin',{n:min}); return t('inH',{h:Math.floor(min/60), m:pad(min%60)}); }
 function renderNext(){
@@ -639,7 +987,7 @@ function renderStock(){
   }).join('');
 }
 function render(){
-  renderClock(); renderNext(); renderStock();
+  renderClock(); renderNext(); renderPrayers(); renderStock();
   const list = todays(), nx = nextItem(), nm = Math.floor(nowMin());
   const done = list.filter(isDone).length;
   $('#prog').textContent = t('progress',{d:done, n:list.length});
@@ -688,9 +1036,9 @@ function render(){
 /* ================= Interactions ================= */
 $('#list').addEventListener('click', e => {
   const c = e.target.closest('[data-check]'), ed = e.target.closest('[data-edit]'), ex = e.target.closest('[data-exp]');
-  if (c){ const it = state.items.find(i=>i.id===c.dataset.check); const on = !isDone(it); setDone(it,on); if (on) beep(); save(); render(); }
+  if (c){ const it = getItem(c.dataset.check); const on = !isDone(it); setDone(it,on); if (on) beep(); save(); render(); }
   else if (ex){ const id = ex.dataset.exp; expanded.has(id) ? expanded.delete(id) : expanded.add(id); render(); }
-  else if (ed) openForm(state.items.find(i=>i.id===ed.dataset.edit));
+  else if (ed){ const it = getItem(ed.dataset.edit); if (it && it.virt) $('#prSettings').scrollIntoView({behavior:'smooth', block:'start'}); else if (it) openForm(it); }
 });
 $('#list').addEventListener('change', e => {
   const b = e.target.dataset.bring; if (!b) return;
@@ -701,7 +1049,7 @@ $('#stock').addEventListener('click', e => {
   const s = state.stocks[b.dataset.buy]; if (s){ s.qty = +(Number(s.qty) + Number(s.box||30)).toFixed(2); save(); render(); }
 });
 document.querySelectorAll('.chip').forEach(c => c.onclick = () => { filter = c.dataset.f; render(); });
-document.querySelectorAll('.langs button').forEach(b => b.onclick = () => { state.lang = b.dataset.lang; save(); applyLang(); render(); });
+document.querySelectorAll('.langs button').forEach(b => b.onclick = () => { state.lang = b.dataset.lang; save(); applyLang(); renderPrSettings(); renderSoundSettings(); renderCallSettings(); render(); });
 $('#clearEx').onclick = () => { state.items.filter(i=>i.ex && i.hasVoice).forEach(i=>vDel(i.id)); state.items = state.items.filter(i=>!i.ex); save(); render(); };
 
 $('#unlock').onclick = () => { unlockAudio(); $('#unlock').hidden = true; const ms = chime('tache'); setTimeout(() => speak(t('sayUnlock')), Math.min(ms||0, 3000)); };
@@ -818,11 +1166,185 @@ $('#form').addEventListener('submit', async e => {
   save(); closeForm(); render();
 });
 
+/* ================= Prières : textes ================= */
+Object.assign(T.fr, {fPri:"Prières", pri:"Prière", p_fajr:"Fajr", p_dhuhr:"Dhohr", p_asr:"Asr", p_maghrib:"Maghrib", p_isha:"Icha", sunrise:"Lever du soleil {t}",
+  priTitle:"Heures de prière", priOn:"Rappels de prière", country:"Pays", city:"Ville", method:"Méthode de calcul", mAuto:"Automatique selon le pays",
+  asr:"Calcul de l'Asr", asrStd:"Majoritaire (chaféite, malékite, hanbalite)", asrHan:"Hanafite", adjust:"Ajustement",
+  priHint:"Horaires calculés pour la ville choisie, affichés à l'heure de votre téléphone. Ils peuvent différer de quelques minutes de ceux de votre mosquée : utilisez « Ajustement » si besoin.",
+  adhanTitle:"Son de l'adhan", adhanHelp:"Choisissez un enregistrement audio de l'adhan : il sera joué à l'heure de chaque prière. Sans fichier, une voix annonce la prière.",
+  adhanPick:"Choisir un fichier d'adhan", adhanReady:"Adhan prêt",
+  sayPri:"C'est l'heure de la prière : {p}.", sayPriSoon:"Bientôt la prière : {p}, dans {x}.", priIn:"Prière dans {x}",
+  x5:"5 min", x15:"15 min", m5:"5 min avant", m15:"15 min avant", noAdj:"Aucun",
+  m_mwl:"Ligue islamique mondiale (18°/17°)", m_uoif:"UOIF – France (12°/12°)", m_isna:"ISNA – Amérique du Nord (15°/15°)", m_egypt:"Égypte (19,5°/17,5°)", m_makkah:"Umm al-Qura – La Mecque", m_maroc:"Maroc – Habous (19°/17°)", m_algerie:"Algérie (18°/17°)", m_tunisie:"Tunisie (18°/18°)", m_diyanet:"Turquie – Diyanet (18°/17°)",
+  c_FR:"France", c_BE:"Belgique", c_CH:"Suisse", c_DE:"Allemagne", c_GB:"Royaume-Uni", c_CA:"Canada", c_US:"États-Unis", c_MA:"Maroc", c_DZ:"Algérie", c_TN:"Tunisie", c_SN:"Sénégal", c_EG:"Égypte", c_SA:"Arabie saoudite", c_TR:"Turquie"});
+Object.assign(T.en, {fPri:"Prayers", pri:"Prayer", p_fajr:"Fajr", p_dhuhr:"Dhuhr", p_asr:"Asr", p_maghrib:"Maghrib", p_isha:"Isha", sunrise:"Sunrise {t}",
+  priTitle:"Prayer times", priOn:"Prayer reminders", country:"Country", city:"City", method:"Calculation method", mAuto:"Automatic for the country",
+  asr:"Asr calculation", asrStd:"Standard (Shafi'i, Maliki, Hanbali)", asrHan:"Hanafi", adjust:"Adjustment",
+  priHint:"Times are calculated for the chosen city and shown in your phone's time. They may differ by a few minutes from your mosque: use “Adjustment” if needed.",
+  adhanTitle:"Adhan sound", adhanHelp:"Choose an audio recording of the adhan: it will play at each prayer time. Without a file, a voice announces the prayer.",
+  adhanPick:"Choose an adhan file", adhanReady:"Adhan ready",
+  sayPri:"It is time for prayer: {p}.", sayPriSoon:"Prayer soon: {p}, in {x}.", priIn:"Prayer in {x}",
+  x5:"5 min", x15:"15 min", m5:"5 min before", m15:"15 min before", noAdj:"None",
+  m_mwl:"Muslim World League (18°/17°)", m_uoif:"UOIF – France (12°/12°)", m_isna:"ISNA – North America (15°/15°)", m_egypt:"Egypt (19.5°/17.5°)", m_makkah:"Umm al-Qura – Makkah", m_maroc:"Morocco – Habous (19°/17°)", m_algerie:"Algeria (18°/17°)", m_tunisie:"Tunisia (18°/18°)", m_diyanet:"Turkey – Diyanet (18°/17°)",
+  c_FR:"France", c_BE:"Belgium", c_CH:"Switzerland", c_DE:"Germany", c_GB:"United Kingdom", c_CA:"Canada", c_US:"United States", c_MA:"Morocco", c_DZ:"Algeria", c_TN:"Tunisia", c_SN:"Senegal", c_EG:"Egypt", c_SA:"Saudi Arabia", c_TR:"Turkey"});
+Object.assign(T.ar, {fPri:"الصلوات", pri:"صلاة", p_fajr:"الفجر", p_dhuhr:"الظهر", p_asr:"العصر", p_maghrib:"المغرب", p_isha:"العشاء", sunrise:"الشروق {t}",
+  priTitle:"مواقيت الصلاة", priOn:"تذكير الصلاة", country:"البلد", city:"المدينة", method:"طريقة الحساب", mAuto:"تلقائي حسب البلد",
+  asr:"حساب العصر", asrStd:"الجمهور (شافعي، مالكي، حنبلي)", asrHan:"حنفي", adjust:"تعديل",
+  priHint:"المواقيت محسوبة للمدينة المختارة وتظهر بتوقيت هاتفك. قد تختلف ببضع دقائق عن مسجدك، استعمل «تعديل» عند الحاجة.",
+  adhanTitle:"صوت الأذان", adhanHelp:"اختر تسجيلا صوتيا للأذان ليُشغَّل عند كل صلاة. بدون ملف، يعلن صوت عن الصلاة.",
+  adhanPick:"اختيار ملف الأذان", adhanReady:"الأذان جاهز",
+  sayPri:"حان الآن موعد صلاة {p}.", sayPriSoon:"صلاة {p} بعد {x}.", priIn:"الصلاة بعد {x}",
+  x5:"5 دقائق", x15:"15 دقيقة", m5:"قبل 5 دقائق", m15:"قبل 15 دقيقة", noAdj:"بدون",
+  m_mwl:"رابطة العالم الإسلامي (18°/17°)", m_uoif:"اتحاد المنظمات الإسلامية بفرنسا (12°/12°)", m_isna:"أمريكا الشمالية (15°/15°)", m_egypt:"الهيئة المصرية (19.5°/17.5°)", m_makkah:"أم القرى – مكة", m_maroc:"المغرب – وزارة الأوقاف (19°/17°)", m_algerie:"الجزائر (18°/17°)", m_tunisie:"تونس (18°/18°)", m_diyanet:"تركيا – ديانت (18°/17°)",
+  c_FR:"فرنسا", c_BE:"بلجيكا", c_CH:"سويسرا", c_DE:"ألمانيا", c_GB:"المملكة المتحدة", c_CA:"كندا", c_US:"الولايات المتحدة", c_MA:"المغرب", c_DZ:"الجزائر", c_TN:"تونس", c_SN:"السنغال", c_EG:"مصر", c_SA:"السعودية", c_TR:"تركيا"});
+
+/* ================= Prières : affichage ================= */
+function renderPrayers(){
+  const el = $('#prayers'), on = state.pri && state.pri.on;
+  el.hidden = !on; if (!on) return;
+  const now = new Date(), cfg = prCfg(), ps = prayersFor(now), nm = Math.floor(nowMin());
+  const tm = prayerTimes(now, cfg.city[1], cfg.city[2], cfg.mk, cfg.af), off = Number(state.pri.off)||0;
+  const nx = ps.find(p => toMin(p.time) >= nm && !isDone(p));
+  el.innerHTML = `<div class="prhead"><h3><svg width="22" height="22"><use href="#i-pri"/></svg>${t('priTitle')}</h3><span>${esc(cfg.city[0])} · ${t('c_'+state.pri.country)}</span></div>
+    <div class="prgrid">${ps.map(p => `<div class="prc ${nx && nx.key===p.key ? 'nx' : ''} ${toMin(p.time) < nm || isDone(p) ? 'past' : ''}"><b>${t('p_'+p.key)}</b><span dir="ltr">${p.time}</span></div>`).join('')}</div>
+    <div class="prfoot">${t('sunrise',{t:fromMin(tm.sunrise+off)})} · ${t('m_'+cfg.mk)}</div>`;
+}
+function opt(v, label, sel){ return `<option value="${esc(v)}" ${String(v)===String(sel)?'selected':''}>${esc(label)}</option>`; }
+function renderPrSettings(){
+  const p = state.pri, c = COUNTRIES[p.country] || COUNTRIES.FR;
+  $('#sw-pri').setAttribute('aria-checked', p.on);
+  $('#prOpts').style.display = p.on ? 'grid' : 'none';
+  $('#prHint').hidden = !p.on;
+  $('#pr-country').innerHTML = Object.keys(COUNTRIES).map(k => opt(k, t('c_'+k), p.country)).join('');
+  $('#pr-city').innerHTML = c.c.map((x,i) => opt(i, x[0], p.city)).join('');
+  $('#pr-method').innerHTML = opt('auto', t('mAuto')+' · '+t('m_'+c.m), p.method) + Object.keys(METHODS).map(k => opt(k, t('m_'+k), p.method)).join('');
+  $('#pr-asr').innerHTML = opt('auto', t('mAuto'), p.asr) + opt(1, t('asrStd'), p.asr) + opt(2, t('asrHan'), p.asr);
+  $('#pr-adv').innerHTML = [0,5,10,15,30].map(v => opt(v, v ? t('m'+v) : t('atTime'), p.adv)).join('');
+  $('#pr-off').innerHTML = [-5,-3,-2,-1,0,1,2,3,5].map(v => opt(v, v ? (v>0?'+':'−')+Math.abs(v)+' min' : t('noAdj'), p.off)).join('');
+  $('#adhanState').innerHTML = (p.hasAdhan ? `<span>${t('adhanReady')}</span><button type="button" class="mini" id="aplay">${t('voicePlay')}</button><button type="button" class="mini" id="arem">${t('voiceRemove')}</button>` : '')
+    + `<label class="filebtn" for="f-adhan" style="background:var(--pri-soft);color:var(--pri)"><svg width="20" height="20"><use href="#i-sound"/></svg>${p.hasAdhan ? t('voiceChange') : t('adhanPick')}<input id="f-adhan" type="file" accept="audio/*"></label>`;
+}
+function prChanged(){ save(); silencePast(); renderPrSettings(); renderCallSettings(); render(); }
+$('#sw-pri').onclick = () => { state.pri.on = !state.pri.on; prChanged(); };
+$('#pr-country').onchange = e => { state.pri.country = e.target.value; state.pri.city = 0; prChanged(); };
+$('#pr-city').onchange = e => { state.pri.city = Number(e.target.value); prChanged(); };
+$('#pr-method').onchange = e => { state.pri.method = e.target.value; prChanged(); };
+$('#pr-asr').onchange = e => { state.pri.asr = e.target.value; prChanged(); };
+$('#pr-adv').onchange = e => { state.pri.adv = Number(e.target.value); prChanged(); };
+$('#pr-off').onchange = e => { state.pri.off = Number(e.target.value); prChanged(); };
+$('#adhanState').addEventListener('click', async e => {
+  if (e.target.id==='aplay'){ unlockAudio(); playClip('adhan'); }
+  if (e.target.id==='arem'){ stopSound(); await vDel('adhan'); state.pri.hasAdhan = false; save(); renderPrSettings(); }
+});
+$('#adhanState').addEventListener('change', async e => {
+  if (e.target.id!=='f-adhan') return;
+  const f = e.target.files && e.target.files[0], err = $('#adhanErr'); err.hidden = true;
+  if (!f) return;
+  if (f.type && !f.type.startsWith('audio') && !/\.(m4a|mp3|ogg|opus|wav|aac|amr|3gp|webm)$/i.test(f.name)){ err.textContent = t('voiceBad'); err.hidden = false; return; }
+  if (f.size > 10*1024*1024){ err.textContent = t('voiceTooBig'); err.hidden = false; return; }
+  const ok = await vPut('adhan', f); state.pri.hasAdhan = !!ok; save(); renderPrSettings();
+});
+
+/* ================= Sons et styles : réglages ================= */
+Object.assign(T.fr, {soundsTitle:"Son de chaque rappel", styleTitle:"Style des phrases", st_classique:"Classique", st_chaleureux:"Chaleureux", st_spirituel:"Spirituel", example:"Exemple : « {s} »",
+  snd_cloche:"Cloche douce", snd_carillon:"Carillon du matin", snd_harpe:"Harpe", snd_bol:"Bol chantant", snd_gouttes:"Gouttes d'eau", snd_oiseaux:"Oiseaux", snd_dingdong:"Ding-dong"});
+Object.assign(T.en, {soundsTitle:"Sound for each reminder", styleTitle:"Phrase style", st_classique:"Classic", st_chaleureux:"Warm", st_spirituel:"Spiritual", example:"Example: “{s}”",
+  snd_cloche:"Soft bell", snd_carillon:"Morning chimes", snd_harpe:"Harp", snd_bol:"Singing bowl", snd_gouttes:"Water drops", snd_oiseaux:"Birds", snd_dingdong:"Ding-dong"});
+Object.assign(T.ar, {soundsTitle:"صوت كل تذكير", styleTitle:"أسلوب العبارات", st_classique:"كلاسيكي", st_chaleureux:"دافئ", st_spirituel:"روحاني", example:"مثال: «{s}»",
+  snd_cloche:"جرس هادئ", snd_carillon:"أجراس الصباح", snd_harpe:"قيثارة", snd_bol:"وعاء رنّان", snd_gouttes:"قطرات ماء", snd_oiseaux:"عصافير", snd_dingdong:"دينغ دونغ"});
+const SND_TYPES = [['med','fMed'],['rdv','fRdv'],['tache','fTache'],['pri','fPri']];
+function sampleItem(type){
+  if (type==='pri'){ const p = prayersFor(new Date()); return p[1] || {id:'s', type:'pri', key:'dhuhr', time:'12:30', adv:0}; }
+  return state.items.find(i => i.type===type && !i.adv) || state.items.find(i => i.type===type) || {id:'s', type, title:t(type), time:'09:00', adv:0, note:''};
+}
+function renderSoundSettings(){
+  $('#sndRows').innerHTML = SND_TYPES.map(([ty,lab]) => `<div class="sndrow"><label for="snd-${ty}">${t(lab)}</label>
+    <select id="snd-${ty}" data-snd="${ty}">${SOUNDS.map(s => opt(s, t('snd_'+s), sndFor(ty))).join('')}</select>
+    <button type="button" class="mini" data-play="${ty}" aria-label="${t('voicePlay')} ${t(lab)}">${t('voicePlay')}</button></div>`).join('');
+  const st = state.settings.style || 'classique';
+  $('#styleSeg').innerHTML = ['classique','chaleureux','spirituel'].map(s => `<button type="button" data-style="${s}" aria-pressed="${s===st}">${t('st_'+s)}</button>`).join('');
+  const it = sampleItem('pri'); $('#styleEx').textContent = t('example', {s: phrase({it, kind:'main'})});
+}
+$('#sndRows').addEventListener('change', e => { const ty = e.target.dataset.snd; if (!ty) return; state.settings.snd = state.settings.snd || {...SND_DEFAULT}; state.settings.snd[ty] = e.target.value; save(); unlockAudio(); stopSound(); playSound(e.target.value); });
+$('#sndRows').addEventListener('click', e => {
+  const b = e.target.closest('[data-play]'); if (!b) return;
+  unlockAudio(); $('#unlock').hidden = true; stopSound();
+  const ty = b.dataset.play, ms = playSound(sndFor(ty)), it = sampleItem(ty);
+  setTimeout(() => speak(phrase({it, kind:'main'})), Math.min(ms, 3000));
+});
+$('#styleSeg').addEventListener('click', e => {
+  const b = e.target.closest('[data-style]'); if (!b) return;
+  state.settings.style = b.dataset.style; save(); renderSoundSettings();
+  unlockAudio(); speak(phrase({it: sampleItem('pri'), kind:'main'}));
+});
+
+Object.assign(T.fr, {gMorning:"Bonjour, belle journée à vous", gAfternoon:"Bon après-midi", gEvening:"Bonsoir, douce soirée"});
+Object.assign(T.en, {gMorning:"Good morning, have a lovely day", gAfternoon:"Good afternoon", gEvening:"Good evening"});
+Object.assign(T.ar, {gMorning:"صباح الخير، يومك سعيد", gAfternoon:"نهارك سعيد", gEvening:"مساء الخير، أمسية هادئة"});
+/* ================= Annonce de la prière : adhan ou phrase courte ================= */
+const CALLS = {
+  wakt:  {ar:"حان وقت الصلاة",       fr:"C'est l'heure de la prière",          en:"It is time for prayer"},
+  tansa: {ar:"لا تنس الصلاة",        fr:"N'oubliez pas la prière",             en:"Don't forget the prayer"},
+  istaid:{ar:"استعد للصلاة",         fr:"Préparez-vous pour la prière",        en:"Get ready for prayer"},
+  fajr:  {ar:"الصلاة خير من النوم",  fr:"La prière vaut mieux que le sommeil", en:"Prayer is better than sleep"}
+};
+const PR_AR = {fajr:"الفجر", dhuhr:"الظهر", asr:"العصر", maghrib:"المغرب", isha:"العشاء"};
+Object.assign(T.fr, {callTitle:"Annonce de la prière", callAdhan:"Adhan", callPhrase:"Phrase courte", fajrPhrase:"Pour le Fajr, dire « الصلاة خير من النوم »", noArVoice:"Si la voix arabe ne parle pas, installez l'arabe dans les réglages « synthèse vocale » du téléphone. En attendant, la traduction est lue."});
+Object.assign(T.en, {callTitle:"Prayer announcement", callAdhan:"Adhan", callPhrase:"Short phrase", fajrPhrase:"For Fajr, say “الصلاة خير من النوم”", noArVoice:"If the Arabic voice stays silent, install Arabic in the phone's text-to-speech settings. Meanwhile, the translation is read."});
+Object.assign(T.ar, {callTitle:"الإعلان عن الصلاة", callAdhan:"الأذان", callPhrase:"عبارة قصيرة", fajrPhrase:"لصلاة الفجر: «الصلاة خير من النوم»", noArVoice:"إذا لم يتكلم الصوت العربي، أضف اللغة العربية في إعدادات تحويل النص إلى كلام في الهاتف."});
+const callKey = it => (it.key==='fajr' && state.pri.fajrPhrase !== false) ? 'fajr' : (state.pri.phrase || 'wakt');
+const usesPhrase = it => it.type==='pri' && !it.adv && state.pri.call==='phrase';
+const hasArVoice = () => { try { return speechSynthesis.getVoices().some(v => v.lang && v.lang.toLowerCase().startsWith('ar')); } catch(e){ return false; } };
+function speakCall(it){
+  if (!state.settings.voice || !('speechSynthesis' in window)) return;
+  const c = CALLS[callKey(it)];
+  const voices = (() => { try { return speechSynthesis.getVoices(); } catch(e){ return []; } })();
+  if (hasArVoice() || !voices.length){
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(c.ar + '، صلاة ' + PR_AR[it.key]);
+      u.lang = 'ar-SA'; u.rate = 0.85;
+      const v = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ar')); if (v) u.voice = v;
+      speechSynthesis.speak(u);
+    } catch(e){}
+  } else speak((c[L()] || c.fr) + '. ' + title(it) + '.');
+}
+function renderCallSettings(){
+  const p = state.pri, mode = p.call || 'adhan';
+  $('#callSeg').innerHTML = ['adhan','phrase'].map(m => `<button type="button" data-call="${m}" aria-pressed="${m===mode}">${t(m==='adhan'?'callAdhan':'callPhrase')}</button>`).join('');
+  $('#prAdhan').hidden = !p.on || mode !== 'adhan';
+  const box = $('#callPhrases'); box.hidden = !p.on || mode !== 'phrase';
+  const sel = p.phrase || 'wakt', tr = k => L()==='ar' ? '' : (CALLS[k][L()] || CALLS[k].fr);
+  box.innerHTML = ['wakt','tansa','istaid'].map(k => `<label class="ph ${k===sel?'on':''}"><input type="radio" name="callph" value="${k}" ${k===sel?'checked':''}>
+      <span class="phtxt"><b lang="ar" dir="rtl">${CALLS[k].ar}</b>${tr(k)?`<small>${esc(tr(k))}</small>`:''}</span>
+      <button type="button" class="mini" data-say="${k}">${t('voicePlay')}</button></label>`).join('')
+    + `<div class="ph fajrrow"><span class="phtxt"><b>${t('fajrPhrase')}</b>${tr('fajr')?`<small>${esc(tr('fajr'))}</small>`:''}</span>
+      <button type="button" class="mini" data-say="fajr">${t('voicePlay')}</button>
+      <button type="button" class="switch" id="sw-fajr" role="switch" aria-checked="${p.fajrPhrase !== false}" aria-label="Fajr"></button></div>`
+    + (hasArVoice() ? '' : `<p class="hint">${t('noArVoice')}</p>`);
+}
+$('#callSeg').addEventListener('click', e => { const b = e.target.closest('[data-call]'); if (!b) return; state.pri.call = b.dataset.call; save(); renderCallSettings(); });
+$('#callPhrases').addEventListener('change', e => { if (e.target.name==='callph'){ state.pri.phrase = e.target.value; save(); renderCallSettings(); } });
+$('#callPhrases').addEventListener('click', e => {
+  const s = e.target.closest('[data-say]'), f = e.target.closest('#sw-fajr');
+  if (f){ state.pri.fajrPhrase = state.pri.fajrPhrase === false; save(); renderCallSettings(); return; }
+  if (s){ e.preventDefault(); unlockAudio(); stopSound();
+    const k = s.dataset.say, it = {type:'pri', key: k==='fajr' ? 'fajr' : 'dhuhr', adv:0};
+    const saved = state.pri.phrase, savedF = state.pri.fajrPhrase;
+    if (k !== 'fajr') state.pri.phrase = k; else state.pri.fajrPhrase = true;
+    speakCall(it); state.pri.phrase = saved; state.pri.fajrPhrase = savedF;
+  }
+});
+try { speechSynthesis.addEventListener('voiceschanged', () => renderCallSettings()); } catch(e){}
+
 /* ================= Démarrage ================= */
 load();
 idbOpen();
 applyLang();
 setSwitch('#sw-sound', state.settings.sound); setSwitch('#sw-voice', state.settings.voice);
+renderPrSettings();
+renderSoundSettings();
+renderCallSettings();
 silencePast();
 render();
 setInterval(tick, 5000);
@@ -830,7 +1352,7 @@ setInterval(render, 60000);
 </script>
 
 <script>
-/* Rappello — couche native Android (Capacitor)
+/* RappelMe — couche native Android (Capacitor)
    Programme de vraies notifications système qui sonnent même téléphone verrouillé.
    Sur un simple navigateur, ce fichier ne fait rien. */
 (function () {
@@ -860,7 +1382,7 @@ setInterval(render, 60000);
       if (at.getTime() <= now + 5000) return;
       out.push({
         id: nid(it.id, kind, day),
-        title: kind === 'leave' ? t('leaveNow') : t(it.type) + ' · ' + fmtTime(it.time),
+        title: kind === 'leave' ? t('leaveNow') : (it.type === 'pri' ? t('pri') + ' ' + title(it) : t(it.type)) + ' · ' + fmtTime(it.time),
         body: phrase({ it, kind: kind === 'leave' ? 'leave' : 'main' }),
         schedule: { at, allowWhileIdle: true },
         channelId: 'rappels',
@@ -880,6 +1402,15 @@ setInterval(render, 60000);
         if (lm != null && lm !== alertMin(it)) push(it, 'leave', atMin(d0, lm), i);
       }
       if (it.snooze && !isDone(it)) push(it, 'snooze', new Date(it.snooze), 0);
+    }
+    // Prières : horaires recalculés pour chacun des prochains jours
+    for (let i = 0; i < DAYS_AHEAD; i++) {
+      const d0 = dayStart(i);
+      for (const it of prayersFor(d0)) {
+        if (i === 0 && isDone(it)) continue;
+        push(it, 'main', atMin(d0, alertMin(it)), i);
+        if (i === 0 && it.snooze) push(it, 'snooze', new Date(it.snooze), 0);
+      }
     }
     return out;
   }
@@ -932,17 +1463,17 @@ setInterval(render, 60000);
 
     // Notification reçue pendant que l'application est ouverte : écran d'alerte
     LN.addListener('localNotificationReceived', n => {
-      const ex = n.extra || {}, it = state.items.find(i => i.id === ex.id);
+      const ex = n.extra || {}, it = getItem(ex.id);
       if (!it) return;
       state.fired[fkey(it, ex.kind)] = true;
       fire(it, ex.kind);
     });
     // Bouton touché sur la notification (même téléphone verrouillé)
     LN.addListener('localNotificationActionPerformed', ev => {
-      const ex = (ev.notification && ev.notification.extra) || {}, it = state.items.find(i => i.id === ex.id);
+      const ex = (ev.notification && ev.notification.extra) || {}, it = getItem(ex.id);
       if (!it) return;
       if (ev.actionId === 'done') { setDone(it, true); save(); render(); }
-      else if (ev.actionId === 'snooze') { it.snooze = Date.now() + 10 * 60000; save(); render(); }
+      else if (ev.actionId === 'snooze') { setSnooze(it, Date.now() + 10 * 60000); save(); render(); }
       else { unlockAudio(); state.fired[fkey(it, ex.kind)] = true; fire(it, ex.kind); } // ouverture : voix du proche
     });
 

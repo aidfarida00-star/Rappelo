@@ -1,4 +1,4 @@
-/* Rappello — couche native Android (Capacitor)
+/* RappelMe — couche native Android (Capacitor)
    Programme de vraies notifications système qui sonnent même téléphone verrouillé.
    Sur un simple navigateur, ce fichier ne fait rien. */
 (function () {
@@ -28,7 +28,7 @@
       if (at.getTime() <= now + 5000) return;
       out.push({
         id: nid(it.id, kind, day),
-        title: kind === 'leave' ? t('leaveNow') : t(it.type) + ' · ' + fmtTime(it.time),
+        title: kind === 'leave' ? t('leaveNow') : (it.type === 'pri' ? t('pri') + ' ' + title(it) : t(it.type)) + ' · ' + fmtTime(it.time),
         body: phrase({ it, kind: kind === 'leave' ? 'leave' : 'main' }),
         schedule: { at, allowWhileIdle: true },
         channelId: 'rappels',
@@ -48,6 +48,15 @@
         if (lm != null && lm !== alertMin(it)) push(it, 'leave', atMin(d0, lm), i);
       }
       if (it.snooze && !isDone(it)) push(it, 'snooze', new Date(it.snooze), 0);
+    }
+    // Prières : horaires recalculés pour chacun des prochains jours
+    for (let i = 0; i < DAYS_AHEAD; i++) {
+      const d0 = dayStart(i);
+      for (const it of prayersFor(d0)) {
+        if (i === 0 && isDone(it)) continue;
+        push(it, 'main', atMin(d0, alertMin(it)), i);
+        if (i === 0 && it.snooze) push(it, 'snooze', new Date(it.snooze), 0);
+      }
     }
     return out;
   }
@@ -100,17 +109,17 @@
 
     // Notification reçue pendant que l'application est ouverte : écran d'alerte
     LN.addListener('localNotificationReceived', n => {
-      const ex = n.extra || {}, it = state.items.find(i => i.id === ex.id);
+      const ex = n.extra || {}, it = getItem(ex.id);
       if (!it) return;
       state.fired[fkey(it, ex.kind)] = true;
       fire(it, ex.kind);
     });
     // Bouton touché sur la notification (même téléphone verrouillé)
     LN.addListener('localNotificationActionPerformed', ev => {
-      const ex = (ev.notification && ev.notification.extra) || {}, it = state.items.find(i => i.id === ex.id);
+      const ex = (ev.notification && ev.notification.extra) || {}, it = getItem(ex.id);
       if (!it) return;
       if (ev.actionId === 'done') { setDone(it, true); save(); render(); }
-      else if (ev.actionId === 'snooze') { it.snooze = Date.now() + 10 * 60000; save(); render(); }
+      else if (ev.actionId === 'snooze') { setSnooze(it, Date.now() + 10 * 60000); save(); render(); }
       else { unlockAudio(); state.fired[fkey(it, ex.kind)] = true; fire(it, ex.kind); } // ouverture : voix du proche
     });
 
