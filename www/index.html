@@ -101,6 +101,7 @@ svg{flex:none}
 .ph{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--surface-2);border:2px solid transparent;border-radius:16px;padding:10px 12px;cursor:pointer}
 .ph.on{border-color:var(--pri);background:var(--pri-soft)}
 .ph input{width:22px;height:22px;padding:0;accent-color:var(--pri)}
+.ph .phtxt{cursor:pointer;min-width:0}
 .ph .phtxt b{display:block;font-family:"Cairo",var(--f-body);font-size:20px;font-weight:700;line-height:1.3}
 .ph .phtxt small{display:block;color:var(--muted);font-size:13px;font-weight:600}
 .ph .mini{background:var(--surface)}
@@ -110,7 +111,45 @@ svg{flex:none}
 .ph.fajrrow .mini{grid-column:2}
 .ph.fajrrow .switch{grid-column:3}
 :root[dir="ltr"] .ph .phtxt b[dir="rtl"]{text-align:left}
+.ph .phrec{grid-column:1 / -1;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.recbtn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:6px;border-radius:12px;padding:8px 12px;font-weight:800;font-size:14px;background:var(--surface);color:var(--pri);cursor:pointer;border:2px dashed var(--pri)}
+.recbtn.has{border-style:solid;background:var(--pri);color:var(--on-color)}
+.recbtn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
 .alert .callar{font-family:"Cairo",sans-serif;font-size:clamp(26px,8vw,36px);font-weight:700;line-height:1.3}
+
+/* Qibla */
+.qibla{background:var(--surface);border-radius:20px;padding:12px 14px;display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;align-items:center;box-shadow:var(--card-shadow)}
+.qibla .mini{grid-column:1 / -1;background:linear-gradient(135deg,var(--pri),var(--pri-1));color:var(--on-color);padding:12px}
+.qtxt h3{font-size:18px;font-weight:600;color:var(--pri);display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+.qtxt h3 span{font-family:"Fredoka",var(--f-display);color:var(--ink);font-size:17px}
+.qtxt p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+.qm-ring{fill:var(--pri-soft);stroke:var(--pri);stroke-width:1.5}
+.qm-n{fill:var(--muted);font:800 9px var(--f-body);text-anchor:middle}
+.qm-arrow{fill:#E0A93B}.qm-kaaba{fill:#1D1B2E;stroke:#E0A93B;stroke-width:1}.qm-dot{fill:var(--pri)}
+.qview{position:fixed;inset:0;z-index:30;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;color:#fff;
+  background:radial-gradient(circle at 50% 40%,#1E5E63 0%,#123A47 45%,#0C1B30 100%);
+  padding-block:calc(20px + env(safe-area-inset-top,0px)) calc(20px + env(safe-area-inset-bottom,0px));padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.qview h2{font-size:30px;font-weight:600}
+.qdeg{font-family:"Fredoka",var(--f-display);font-size:22px;font-weight:600;color:#FFE7A3}
+.qdist{font-size:15px;opacity:.85;margin:0}
+.qwrap{position:relative;width:min(84vw,340px);aspect-ratio:1;max-width:100%}
+.qwrap::before{content:"";position:absolute;left:50%;top:-14px;transform:translateX(-50%);border:11px solid transparent;border-top:16px solid #FFE7A3;z-index:2;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+.qdial{width:100%;height:100%;display:block}
+.dial-bg{fill:rgba(255,255,255,.06)}.dial-ring{fill:none;stroke:rgba(255,255,255,.35);stroke-width:2}
+.tk{stroke:rgba(255,255,255,.35);stroke-width:1.2}.tk-m{stroke:rgba(255,255,255,.6);stroke-width:1.6}.tk-l{stroke:#fff;stroke-width:2.4}
+.cd{fill:#fff;font:700 20px "Fredoka",var(--f-body);text-anchor:middle}.cd-n{fill:#FF8A7A}
+.nm{fill:rgba(255,255,255,.55);font:600 10px var(--f-body);text-anchor:middle}
+.kaaba{fill:#15131F;stroke:#FFE7A3;stroke-width:1.5}.tail{fill:rgba(255,255,255,.4)}.dial-hub{fill:#123A47}
+.qarc{fill:none;stroke:#FFE7A3;stroke-width:6;stroke-linecap:round;opacity:.35}
+.qview.aligned .qwrap{filter:drop-shadow(0 0 22px rgba(80,230,170,.75))}
+.qview.aligned .qarc{stroke:#5BE3AE;opacity:.9}
+.qstatus{font-family:"Fredoka",var(--f-display);font-size:22px;font-weight:600;min-height:1.4em}
+.qview.aligned .qstatus{color:#7DF0C0}
+.qhead{font-family:"Fredoka",var(--f-display);font-size:15px;opacity:.7}
+.qhelp{font-size:15px;max-width:34ch;opacity:.9;margin:0}
+.qview .btn{background:rgba(255,255,255,.18);color:#fff;min-width:200px}
+.qview .btn.big{background:#fff;color:#123A47}
+@media (prefers-reduced-motion:reduce){.qview *{transition:none}}
 
 /* Stock */
 .stock{background:var(--warn-soft);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
@@ -361,6 +400,7 @@ input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-we
 
   <section class="next" id="next" aria-live="polite"></section>
   <section class="prayers" id="prayers" hidden aria-live="polite"></section>
+  <section class="qibla" id="qiblaCard" hidden></section>
   <section class="stock" id="stock" hidden></section>
 
   <div class="progress"><div class="bar"><i id="barfill" style="width:0"></i></div><b id="prog"></b></div>
@@ -474,6 +514,19 @@ input[type="time"]{font-family:"Fredoka",var(--f-display);font-size:24px;font-we
     </div>
     <button type="button" class="btn danger" id="del" hidden></button>
   </form>
+</div>
+
+<div class="qview" id="qiblaView" hidden role="dialog" aria-labelledby="qTitle">
+  <h2 id="qTitle"></h2>
+  <div class="qdeg" id="qDeg" dir="ltr"></div>
+  <p class="qdist" id="qDist"></p>
+  <div class="qwrap" id="qDial"></div>
+  <div class="qstatus" id="qStatus" aria-live="polite"></div>
+  <div class="qhead" id="qHead" dir="ltr"></div>
+  <p class="qhelp" id="qHelp"></p>
+  <p class="qhelp" id="qCalib" hidden></p>
+  <button class="btn big" id="qPerm" type="button" hidden></button>
+  <button class="btn" id="qClose" type="button"></button>
 </div>
 
 <div class="alert" id="alert" hidden role="alertdialog" aria-labelledby="a-title">
@@ -820,7 +873,7 @@ function speak(text){
     const pre = SPEECH[L()];
     u.lang = {fr:'fr-FR', en:'en-GB', ar:'ar-SA'}[L()]; u.rate = 0.92;
     const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.toLowerCase().startsWith(pre));
-    if (v) u.voice = v;
+    if (v) { try { u.voice = v; } catch(e){} }
     speechSynthesis.speak(u);
   } catch(e){}
 }
@@ -987,7 +1040,7 @@ function renderStock(){
   }).join('');
 }
 function render(){
-  renderClock(); renderNext(); renderPrayers(); renderStock();
+  renderClock(); renderNext(); renderPrayers(); renderQiblaCard(); renderStock();
   const list = todays(), nx = nextItem(), nm = Math.floor(nowMin());
   const done = list.filter(isDone).length;
   $('#prog').textContent = t('progress',{d:done, n:list.length});
@@ -1289,25 +1342,45 @@ const CALLS = {
   fajr:  {ar:"الصلاة خير من النوم",  fr:"La prière vaut mieux que le sommeil", en:"Prayer is better than sleep"}
 };
 const PR_AR = {fajr:"الفجر", dhuhr:"الظهر", asr:"العصر", maghrib:"المغرب", isha:"العشاء"};
+Object.assign(T.fr, {recAdd:"Ajouter un enregistrement", recDone:"Enregistrement ajouté", recPlaying:"Lecture de votre enregistrement.", recHelp:"Astuce : ajoutez l'enregistrement d'un proche pour chaque phrase, il sera joué à la place de la voix du téléphone.",
+  noArVoice2:"Cet appareil n'a pas de voix arabe : la traduction est lue à la place. Pour entendre la phrase en arabe, touchez « Ajouter un enregistrement » et choisissez un fichier audio de la phrase.",
+  noVoiceAtAll:"Aucune voix n'est disponible sur cet appareil. Ajoutez un enregistrement pour chaque phrase."});
+Object.assign(T.en, {recAdd:"Add a recording", recDone:"Recording added", recPlaying:"Playing your recording.", recHelp:"Tip: add a loved one's recording for each phrase; it plays instead of the phone's voice.",
+  noArVoice2:"This device has no Arabic voice, so the translation is read instead. To hear the phrase in Arabic, tap “Add a recording” and choose an audio file of the phrase.",
+  noVoiceAtAll:"No voice is available on this device. Add a recording for each phrase."});
+Object.assign(T.ar, {recAdd:"إضافة تسجيل", recDone:"تمت إضافة التسجيل", recPlaying:"تشغيل تسجيلك.", recHelp:"نصيحة: أضف تسجيلا بصوت شخص عزيز لكل عبارة، سيُشغَّل بدل صوت الهاتف.",
+  noArVoice2:"لا يوجد صوت عربي في هذا الجهاز، لذلك تُقرأ الترجمة. لسماع العبارة بالعربية، اضغط «إضافة تسجيل» واختر ملفا صوتيا للعبارة.",
+  noVoiceAtAll:"لا يوجد أي صوت في هذا الجهاز. أضف تسجيلا لكل عبارة."});
 Object.assign(T.fr, {callTitle:"Annonce de la prière", callAdhan:"Adhan", callPhrase:"Phrase courte", fajrPhrase:"Pour le Fajr, dire « الصلاة خير من النوم »", noArVoice:"Si la voix arabe ne parle pas, installez l'arabe dans les réglages « synthèse vocale » du téléphone. En attendant, la traduction est lue."});
 Object.assign(T.en, {callTitle:"Prayer announcement", callAdhan:"Adhan", callPhrase:"Short phrase", fajrPhrase:"For Fajr, say “الصلاة خير من النوم”", noArVoice:"If the Arabic voice stays silent, install Arabic in the phone's text-to-speech settings. Meanwhile, the translation is read."});
 Object.assign(T.ar, {callTitle:"الإعلان عن الصلاة", callAdhan:"الأذان", callPhrase:"عبارة قصيرة", fajrPhrase:"لصلاة الفجر: «الصلاة خير من النوم»", noArVoice:"إذا لم يتكلم الصوت العربي، أضف اللغة العربية في إعدادات تحويل النص إلى كلام في الهاتف."});
 const callKey = it => (it.key==='fajr' && state.pri.fajrPhrase !== false) ? 'fajr' : (state.pri.phrase || 'wakt');
 const usesPhrase = it => it.type==='pri' && !it.adv && state.pri.call==='phrase';
 const hasArVoice = () => { try { return speechSynthesis.getVoices().some(v => v.lang && v.lang.toLowerCase().startsWith('ar')); } catch(e){ return false; } };
-function speakCall(it){
-  if (!state.settings.voice || !('speechSynthesis' in window)) return;
-  const c = CALLS[callKey(it)];
-  const voices = (() => { try { return speechSynthesis.getVoices(); } catch(e){ return []; } })();
-  if (hasArVoice() || !voices.length){
-    try {
-      speechSynthesis.cancel();
+async function speakCall(it){
+  const k = callKey(it);
+  if ((state.pri.callAudio||{})[k]){ const ok = await playClip('call-'+k); if (ok) return 'clip'; }
+  if (!('speechSynthesis' in window)) return 'none';
+  const c = CALLS[k], voices = (() => { try { return speechSynthesis.getVoices(); } catch(e){ return []; } })();
+  const arV = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ar'));
+  try { speechSynthesis.cancel(); } catch(e){}
+  await new Promise(r => setTimeout(r, 80));
+  try {
+    if (arV){
       const u = new SpeechSynthesisUtterance(c.ar + '، صلاة ' + PR_AR[it.key]);
-      u.lang = 'ar-SA'; u.rate = 0.85;
-      const v = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ar')); if (v) u.voice = v;
-      speechSynthesis.speak(u);
-    } catch(e){}
-  } else speak((c[L()] || c.fr) + '. ' + title(it) + '.');
+      u.lang = arV.lang || 'ar-SA'; try { u.voice = arV; } catch(e){} u.rate = 0.85; speechSynthesis.speak(u); return 'ar';
+    }
+    const txt = (c[L()] || c.fr) + '. ' + title(it) + '.';
+    const u = new SpeechSynthesisUtterance(txt);
+    u.lang = {fr:'fr-FR', en:'en-GB', ar:'ar-SA'}[L()]; u.rate = 0.92;
+    const v = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(SPEECH[L()])); if (v) { try { u.voice = v; } catch(e){} }
+    speechSynthesis.speak(u); return 'translation';
+  } catch(e){ return 'none'; }
+}
+function recBtn(k){
+  const has = (state.pri.callAudio||{})[k];
+  return `<label class="recbtn ${has?'has':''}" for="rec-${k}"><svg width="16" height="16"><use href="#i-heart"/></svg>${has ? t('recDone') : t('recAdd')}<input id="rec-${k}" data-rec="${k}" type="file" accept="audio/*"></label>`
+    + (has ? `<button type="button" class="link" data-unrec="${k}">${t('voiceRemove')}</button>` : '');
 }
 function renderCallSettings(){
   const p = state.pri, mode = p.call || 'adhan';
@@ -1315,27 +1388,171 @@ function renderCallSettings(){
   $('#prAdhan').hidden = !p.on || mode !== 'adhan';
   const box = $('#callPhrases'); box.hidden = !p.on || mode !== 'phrase';
   const sel = p.phrase || 'wakt', tr = k => L()==='ar' ? '' : (CALLS[k][L()] || CALLS[k].fr);
-  box.innerHTML = ['wakt','tansa','istaid'].map(k => `<label class="ph ${k===sel?'on':''}"><input type="radio" name="callph" value="${k}" ${k===sel?'checked':''}>
-      <span class="phtxt"><b lang="ar" dir="rtl">${CALLS[k].ar}</b>${tr(k)?`<small>${esc(tr(k))}</small>`:''}</span>
-      <button type="button" class="mini" data-say="${k}">${t('voicePlay')}</button></label>`).join('')
+  box.innerHTML = ['wakt','tansa','istaid'].map(k => `<div class="ph ${k===sel?'on':''}"><input type="radio" id="ph-${k}" name="callph" value="${k}" ${k===sel?'checked':''}>
+      <label class="phtxt" for="ph-${k}"><b lang="ar" dir="rtl">${CALLS[k].ar}</b>${tr(k)?`<small>${esc(tr(k))}</small>`:''}</label>
+      <button type="button" class="mini" data-say="${k}">${t('voicePlay')}</button>
+      <span class="phrec">${recBtn(k)}</span></div>`).join('')
     + `<div class="ph fajrrow"><span class="phtxt"><b>${t('fajrPhrase')}</b>${tr('fajr')?`<small>${esc(tr('fajr'))}</small>`:''}</span>
       <button type="button" class="mini" data-say="fajr">${t('voicePlay')}</button>
-      <button type="button" class="switch" id="sw-fajr" role="switch" aria-checked="${p.fajrPhrase !== false}" aria-label="Fajr"></button></div>`
-    + (hasArVoice() ? '' : `<p class="hint">${t('noArVoice')}</p>`);
+      <button type="button" class="switch" id="sw-fajr" role="switch" aria-checked="${p.fajrPhrase !== false}" aria-label="Fajr"></button>
+      <span class="phrec">${recBtn('fajr')}</span></div>`
+    + `<p class="hint" id="callStatus">${hasArVoice() ? t('recHelp') : t('noArVoice2')}</p><p class="err" id="callErr" hidden></p>`;
 }
 $('#callSeg').addEventListener('click', e => { const b = e.target.closest('[data-call]'); if (!b) return; state.pri.call = b.dataset.call; save(); renderCallSettings(); });
-$('#callPhrases').addEventListener('change', e => { if (e.target.name==='callph'){ state.pri.phrase = e.target.value; save(); renderCallSettings(); } });
-$('#callPhrases').addEventListener('click', e => {
-  const s = e.target.closest('[data-say]'), f = e.target.closest('#sw-fajr');
+$('#callPhrases').addEventListener('change', async e => {
+  if (e.target.name==='callph'){ state.pri.phrase = e.target.value; save(); renderCallSettings(); return; }
+  const k = e.target.dataset.rec; if (!k) return;
+  const f = e.target.files && e.target.files[0]; if (!f) return;
+  const err = $('#callErr');
+  if (f.type && !f.type.startsWith('audio') && !/\.(m4a|mp3|ogg|opus|wav|aac|amr|3gp|webm)$/i.test(f.name)){ err.textContent = t('voiceBad'); err.hidden = false; return; }
+  if (f.size > 10*1024*1024){ err.textContent = t('voiceTooBig'); err.hidden = false; return; }
+  const ok = await vPut('call-'+k, f);
+  state.pri.callAudio = state.pri.callAudio || {}; state.pri.callAudio[k] = !!ok; save(); renderCallSettings();
+});
+$('#callPhrases').addEventListener('click', async e => {
+  const s = e.target.closest('[data-say]'), f = e.target.closest('#sw-fajr'), un = e.target.closest('[data-unrec]');
+  if (un){ e.preventDefault(); const k = un.dataset.unrec; await vDel('call-'+k); delete state.pri.callAudio[k]; save(); renderCallSettings(); return; }
   if (f){ state.pri.fajrPhrase = state.pri.fajrPhrase === false; save(); renderCallSettings(); return; }
   if (s){ e.preventDefault(); unlockAudio(); stopSound();
     const k = s.dataset.say, it = {type:'pri', key: k==='fajr' ? 'fajr' : 'dhuhr', adv:0};
     const saved = state.pri.phrase, savedF = state.pri.fajrPhrase;
     if (k !== 'fajr') state.pri.phrase = k; else state.pri.fajrPhrase = true;
-    speakCall(it); state.pri.phrase = saved; state.pri.fajrPhrase = savedF;
+    const how = await speakCall(it); state.pri.phrase = saved; state.pri.fajrPhrase = savedF;
+    const st = $('#callStatus');
+    if (st) st.textContent = how==='clip' ? t('recPlaying') : how==='ar' ? t('recHelp') : how==='translation' ? t('noArVoice2') : t('noVoiceAtAll');
   }
 });
 try { speechSynthesis.addEventListener('voiceschanged', () => renderCallSettings()); } catch(e){}
+
+/* ================= Qibla ================= */
+const KAABA = [21.4225, 39.8262];
+function qiblaBearing(lat, lng){
+  const p1 = dtr(lat), p2 = dtr(KAABA[0]), dl = dtr(KAABA[1] - lng);
+  const y = Math.sin(dl) * Math.cos(p2), x = Math.cos(p1)*Math.sin(p2) - Math.sin(p1)*Math.cos(p2)*Math.cos(dl);
+  return (rtd(Math.atan2(y, x)) + 360) % 360;
+}
+function distToMecca(lat, lng){
+  const R = 6371, p1 = dtr(lat), p2 = dtr(KAABA[0]), dp = p2 - p1, dl = dtr(KAABA[1] - lng);
+  const a = Math.sin(dp/2)**2 + Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+const DIRS = {
+  fr:['Nord','Nord-Nord-Est','Nord-Est','Est-Nord-Est','Est','Est-Sud-Est','Sud-Est','Sud-Sud-Est','Sud','Sud-Sud-Ouest','Sud-Ouest','Ouest-Sud-Ouest','Ouest','Ouest-Nord-Ouest','Nord-Ouest','Nord-Nord-Ouest'],
+  en:['North','North-northeast','Northeast','East-northeast','East','East-southeast','Southeast','South-southeast','South','South-southwest','Southwest','West-southwest','West','West-northwest','Northwest','North-northwest'],
+  ar:['شمال','شمال شرق','شرق','جنوب شرق','جنوب','جنوب غرب','غرب','شمال غرب']
+};
+const CARD = {fr:['N','E','S','O'], en:['N','E','S','W'], ar:['ش','ق','ج','غ']};
+const dirName = b => L()==='ar' ? DIRS.ar[Math.round(b/45) % 8] : (DIRS[L()] || DIRS.fr)[Math.round(b/22.5) % 16];
+Object.assign(T.fr, {qiblaTitle:"Qibla", qiblaOpen:"Ouvrir la boussole", qiblaFrom:"{d}° · {n}", qiblaDist:"{km} km de La Mecque depuis {c}",
+  qiblaLive:"Tournez-vous jusqu'à ce que la Kaaba arrive sous le repère en haut.", qiblaAligned:"Vous êtes face à la Qibla",
+  qiblaStatic:"Boussole indisponible sur cet appareil. Posez le téléphone à plat, le haut vers le Nord : la Qibla est dans la direction de la flèche dorée.",
+  qiblaCalib:"Si la boussole hésite, faites un mouvement en forme de 8 avec le téléphone.", qiblaPerm:"Activer la boussole", qiblaTurn:"Encore {d}° vers la {s}", right:"droite", left:"gauche"});
+Object.assign(T.en, {qiblaTitle:"Qibla", qiblaOpen:"Open the compass", qiblaFrom:"{d}° · {n}", qiblaDist:"{km} km from Makkah, from {c}",
+  qiblaLive:"Turn until the Kaaba reaches the marker at the top.", qiblaAligned:"You are facing the Qibla",
+  qiblaStatic:"Compass not available on this device. Lay the phone flat with its top toward North: the Qibla is where the gold arrow points.",
+  qiblaCalib:"If the compass wavers, move the phone in a figure 8.", qiblaPerm:"Turn on the compass", qiblaTurn:"{d}° more to the {s}", right:"right", left:"left"});
+Object.assign(T.ar, {qiblaTitle:"القبلة", qiblaOpen:"فتح البوصلة", qiblaFrom:"{d}° · {n}", qiblaDist:"{km} كم عن مكة انطلاقا من {c}",
+  qiblaLive:"استدر حتى تصل الكعبة إلى العلامة في الأعلى.", qiblaAligned:"أنت في اتجاه القبلة",
+  qiblaStatic:"البوصلة غير متوفرة في هذا الجهاز. ضع الهاتف أفقيا وأعلاه نحو الشمال: القبلة في اتجاه السهم الذهبي.",
+  qiblaCalib:"إذا كانت البوصلة مترددة، حرّك الهاتف على شكل رقم 8.", qiblaPerm:"تفعيل البوصلة", qiblaTurn:"{d}° إضافية إلى {s}", right:"اليمين", left:"اليسار"});
+
+function qiblaInfo(){ const {city} = prCfg(); return {city, b: qiblaBearing(city[1], city[2]), km: Math.round(distToMecca(city[1], city[2]))}; }
+const fmtKm = km => km.toLocaleString(LOC[L()]);
+function renderQiblaCard(){
+  const el = $('#qiblaCard'); el.hidden = !(state.pri && state.pri.on); if (el.hidden) return;
+  const q = qiblaInfo(), deg = Math.round(q.b);
+  el.innerHTML = `<div class="qmini" aria-hidden="true"><svg viewBox="-32 -32 64 64" width="64" height="64">
+      <circle r="29" class="qm-ring"/><text y="-17" class="qm-n">${CARD[L()][0]}</text>
+      <g transform="rotate(${q.b.toFixed(1)})"><path d="M0,-24 L6,-6 L0,-10 L-6,-6Z" class="qm-arrow"/><rect x="-4" y="-30" width="8" height="8" rx="1" class="qm-kaaba"/></g>
+      <circle r="3" class="qm-dot"/></svg></div>
+    <div class="qtxt"><h3>${t('qiblaTitle')} <span dir="ltr">${t('qiblaFrom',{d:deg, n:dirName(q.b)})}</span></h3>
+      <p>${t('qiblaDist',{km:fmtKm(q.km), c:esc(q.city[0])})}</p></div>
+    <button type="button" class="mini" id="qiblaOpen">${t('qiblaOpen')}</button>`;
+}
+
+/* Boussole plein écran */
+let qHeading = null, qShown = null, qLast = 0, qBuzzed = false, qTimer = null;
+function dialSVG(b){
+  let ticks = '';
+  for (let i = 0; i < 72; i++){
+    const a = i*5, long = i % 18 === 0, mid = i % 6 === 0;
+    ticks += `<line x1="0" y1="-132" x2="0" y2="${long ? -112 : mid ? -119 : -125}" transform="rotate(${a})" class="${long ? 'tk tk-l' : mid ? 'tk tk-m' : 'tk'}"/>`;
+  }
+  const c = CARD[L()], lab = [0,90,180,270].map((a,i) => `<text class="cd ${i===0?'cd-n':''}" transform="rotate(${a}) translate(0,-92) rotate(${-a})" dy="0.35em">${c[i]}</text>`).join('');
+  const nums = [30,60,120,150,210,240,300,330].map(a => `<text class="nm" transform="rotate(${a}) translate(0,-100) rotate(${-a})" dy="0.35em">${a}</text>`).join('');
+  return `<svg viewBox="-150 -150 300 300" class="qdial" role="img" aria-label="${t('qiblaTitle')} ${Math.round(b)}°">
+    <defs><linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE7A3"/><stop offset="1" stop-color="#E0A93B"/></linearGradient></defs>
+    <g id="qrot">
+      <circle r="140" class="dial-bg"/><circle r="140" class="dial-ring"/>${ticks}${lab}${nums}
+      <path d="M ${(132*Math.sin(dtr(-8))).toFixed(1)} ${(-132*Math.cos(dtr(-8))).toFixed(1)} A 132 132 0 0 1 ${(132*Math.sin(dtr(8))).toFixed(1)} ${(-132*Math.cos(dtr(8))).toFixed(1)}" transform="rotate(${b.toFixed(1)})" class="qarc"/>
+      <g transform="rotate(${b.toFixed(1)})">
+        <path d="M0,-86 L13,-30 L0,-40 L-13,-30Z" fill="url(#gold)"/><path d="M0,28 L7,0 L-7,0Z" class="tail"/>
+        <g transform="translate(0,-124)"><rect x="-11" y="-11" width="22" height="22" rx="2" class="kaaba"/><rect x="-11" y="-5" width="22" height="3.5" fill="url(#gold)"/></g>
+      </g>
+      <circle r="9" fill="url(#gold)"/><circle r="4" class="dial-hub"/>
+    </g></svg>`;
+}
+function setDial(){
+  if (qHeading == null) return;
+  if (qShown == null) qShown = qHeading;
+  let d = ((qHeading - qShown + 540) % 360) - 180; qShown = (qShown + d*0.25 + 360) % 360;   // lissage
+  const g = document.getElementById('qrot'); if (g) g.setAttribute('transform', `rotate(${(-qShown).toFixed(1)})`);
+  const q = qiblaInfo(); let off = ((q.b - qShown + 540) % 360) - 180;
+  const al = Math.abs(off) <= 5, v = $('#qiblaView');
+  v.classList.toggle('aligned', al);
+  $('#qStatus').textContent = al ? t('qiblaAligned') : t('qiblaTurn', {d:Math.round(Math.abs(off)), s:t(off > 0 ? 'right' : 'left')});
+  $('#qHead').textContent = Math.round(qShown) + '°';
+  if (al && !qBuzzed){ qBuzzed = true; try { navigator.vibrate && navigator.vibrate(120); } catch(e){} }
+  if (Math.abs(off) > 12) qBuzzed = false;
+}
+function onOri(e){
+  let h = null;
+  if (typeof e.webkitCompassHeading === 'number') h = e.webkitCompassHeading;
+  else if ((e.absolute || e.type === 'deviceorientationabsolute') && typeof e.alpha === 'number') h = 360 - e.alpha;
+  if (h == null || isNaN(h)) return;
+  const so = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+  qHeading = (h + so + 360) % 360; qLast = Date.now();
+  $('#qPerm').hidden = true;
+  if (!$('#qiblaView').classList.contains('live')){ $('#qiblaView').classList.add('live'); $('#qHelp').textContent = t('qiblaLive'); $('#qCalib').hidden = false; }
+  setDial();
+}
+function listenOri(){
+  window.addEventListener('deviceorientationabsolute', onOri, true);
+  window.addEventListener('deviceorientation', onOri, true);
+}
+function openQibla(){
+  const q = qiblaInfo(), v = $('#qiblaView');
+  qHeading = null; qShown = null; qBuzzed = false;
+  v.classList.remove('live','aligned');
+  $('#qDial').innerHTML = dialSVG(q.b);
+  $('#qTitle').textContent = t('qiblaTitle');
+  $('#qDeg').textContent = Math.round(q.b) + '° · ' + dirName(q.b);
+  $('#qDist').textContent = t('qiblaDist', {km:fmtKm(q.km), c:q.city[0]});
+  $('#qStatus').textContent = ''; $('#qHead').textContent = '';
+  $('#qHelp').textContent = t('qiblaStatic'); $('#qCalib').hidden = true; $('#qCalib').textContent = t('qiblaCalib');
+  $('#qClose').textContent = t('close');
+  const perm = $('#qPerm'); perm.textContent = t('qiblaPerm');
+  const needPerm = typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function';
+  perm.hidden = true;
+  v.hidden = false;
+  listenOri();
+  if (needPerm){
+    DeviceOrientationEvent.requestPermission().then(r => { if (r !== 'granted' && qHeading == null) perm.hidden = false; }).catch(() => { if (qHeading == null) perm.hidden = false; });
+  }
+  clearInterval(qTimer); qTimer = setInterval(() => { if (qHeading != null && Date.now() - qLast > 3000){ v.classList.remove('live'); $('#qHelp').textContent = t('qiblaStatic'); } }, 1500);
+  $('#qClose').focus();
+}
+function closeQibla(){
+  window.removeEventListener('deviceorientationabsolute', onOri, true);
+  window.removeEventListener('deviceorientation', onOri, true);
+  clearInterval(qTimer); $('#qiblaView').hidden = true;
+}
+document.addEventListener('click', e => { if (e.target.closest('#qiblaOpen')) openQibla(); });
+$('#qClose').onclick = closeQibla;
+$('#qPerm').onclick = async () => {
+  try { const r = await DeviceOrientationEvent.requestPermission(); if (r === 'granted') $('#qPerm').hidden = true; } catch(e){}
+};
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#qiblaView').hidden) closeQibla(); });
 
 /* ================= Démarrage ================= */
 load();
